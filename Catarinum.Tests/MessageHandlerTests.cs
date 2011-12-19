@@ -50,7 +50,7 @@ namespace Catarinum.Tests {
         public void Should_send_piggy_backed_response() {
             var request = CreateRequestWithPiggyBackedResponse();
             _handler.HandleRequest(request);
-            _socketMock.Verify(s => s.Send(It.Is<Response>(m => m.IsAcknowledgement && m.Code == MessageCode.Content)));
+            _socketMock.Verify(s => s.Send(It.Is<Response>(m => m.IsAcknowledgement && m.Code == CodeRegistry.Content)));
         }
 
         [Test]
@@ -97,8 +97,8 @@ namespace Catarinum.Tests {
         }
 
         private static Request CreateRequest(MessageType type = MessageType.Confirmable) {
-            var request = new Request(0x7d34, type, MessageCode.Get) { Destination = "127.0.0.1:50120" };
-            request.Options.Add(new Option { Type = OptionType.Uri, Value = Util.GetBytes("GET /temperature") });
+            var request = new Request(0x7d34, type, CodeRegistry.Get) { Destination = "127.0.0.1:50120" };
+            request.Options.Add(new Option { Type = OptionType.UriPath, Value = Util.GetBytes("GET /temperature") });
             var token = new Option { Type = OptionType.Token, Value = Util.GetBytes(0x71) };
             request.Options.Add(token);
             return request;

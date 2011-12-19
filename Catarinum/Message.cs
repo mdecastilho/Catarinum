@@ -9,7 +9,7 @@ namespace Catarinum {
         private int _optionCount;
         public int Id { get; private set; }
         public MessageType Type { get; private set; }
-        public MessageCode Code { get; private set; }
+        public CodeRegistry Code { get; private set; }
         public byte[] Payload { get; set; }
         public List<Option> Options;
         public string Source { get; set; }
@@ -47,7 +47,7 @@ namespace Catarinum {
             get { return IsAcknowledgement && IsResponse && Payload.Length > 0; }
         }
 
-        public Message(int id, MessageType type, MessageCode code = MessageCode.Empty) {
+        public Message(int id, MessageType type, CodeRegistry code = CodeRegistry.Empty) {
             Id = id;
             Type = type;
             Code = code;

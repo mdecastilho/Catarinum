@@ -1,8 +1,8 @@
 namespace Catarinum {
     public class EndPoint {
-        private const int ResponseTimeout = 0;
-        private const int ResponseRandomFactor = 0;
-        private const int MaxRetransmit = 0;
+        private const int ResponseTimeout = 2000;
+        private const double ResponseRandomFactor = 1.5;
+        private const int MaxRetransmit = 4;
 
         public int Timeout { get; set; }
         public int RestransmissionCounter { get; set; }

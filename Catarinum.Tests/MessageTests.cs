@@ -6,13 +6,13 @@ namespace Catarinum.Tests {
     public class MessageTests {
         [Test]
         public void Confirmable_message_should_carry_request() {
-            var message = new Message(1, MessageType.Confirmable, MessageCode.Get);
+            var message = new Message(1, MessageType.Confirmable, CodeRegistry.Get);
             Assert.IsTrue(message.IsRequest);
         }
 
         [Test]
         public void Confirmable_message_should_carry_response() {
-            var message = new Message(1, MessageType.Confirmable, MessageCode.Created);
+            var message = new Message(1, MessageType.Confirmable, CodeRegistry.Created);
             Assert.IsTrue(message.IsResponse);
         }
 
@@ -24,13 +24,13 @@ namespace Catarinum.Tests {
 
         [Test]
         public void Non_confirmable_message_should_carry_request() {
-            var message = new Message(1, MessageType.NonConfirmable, MessageCode.Get);
+            var message = new Message(1, MessageType.NonConfirmable, CodeRegistry.Get);
             Assert.IsTrue(message.IsRequest);
         }
 
         [Test]
         public void Non_confirmable_message_message_should_carry_response() {
-            var message = new Message(1, MessageType.NonConfirmable, MessageCode.Created);
+            var message = new Message(1, MessageType.NonConfirmable, CodeRegistry.Created);
             Assert.IsTrue(message.IsResponse);
         }
 
@@ -43,12 +43,12 @@ namespace Catarinum.Tests {
         [Test]
         [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Acknowledgement message MUST NOT carry request.")]
         public void Acknowledgement_message_should_not_carry_request() {
-            new Message(1, MessageType.Acknowledgement, MessageCode.Get);
+            new Message(1, MessageType.Acknowledgement, CodeRegistry.Get);
         }
 
         [Test]
         public void Acknowledgement_message_should_carry_response() {
-            var message = new Message(1, MessageType.Acknowledgement, MessageCode.Created);
+            var message = new Message(1, MessageType.Acknowledgement, CodeRegistry.Created);
             Assert.IsTrue(message.IsResponse);
         }
 
@@ -61,13 +61,13 @@ namespace Catarinum.Tests {
         [Test]
         [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Reset message MUST NOT carry request/response.")]
         public void Reset_message_should_not_carry_request() {
-            new Message(1, MessageType.Reset, MessageCode.Get);
+            new Message(1, MessageType.Reset, CodeRegistry.Get);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Reset message MUST NOT carry request/response.")]
         public void Reset_message_should_not_carry_response() {
-            new Message(1, MessageType.Reset, MessageCode.Get);
+            new Message(1, MessageType.Reset, CodeRegistry.Get);
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace Catarinum.Tests {
 
         [Test]
         public void Acknowledgement_message_should_be_piggy_backed() {
-            var message = new Message(1, MessageType.Acknowledgement, MessageCode.Content) { Payload = new byte[10] };
+            var message = new Message(1, MessageType.Acknowledgement, CodeRegistry.Content) { Payload = new byte[10] };
             Assert.IsTrue(message.IsPiggyBackedResponse);
         }
     }

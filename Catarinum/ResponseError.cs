@@ -2,9 +2,9 @@ using System;
 
 namespace Catarinum {
     public class ResponseError : Exception {
-        public MessageCode Code { get; set; }
+        public CodeRegistry Code { get; set; }
 
-        public ResponseError(MessageCode code) {
+        public ResponseError(CodeRegistry code) {
             Code = code;
         }
     }
