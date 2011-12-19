@@ -1,4 +1,6 @@
-bin
-obj
+Catarinum*/bin
+Catarinum*/obj
+_ReSharper*/*
+Catarinum.suo
 Catarinum.1.1.dotCover
 Catarinum.5.1.ReSharper.user

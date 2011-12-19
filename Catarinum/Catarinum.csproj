@@ -41,16 +41,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndPoint.cs" />
-    <Compile Include="IResourceHandler.cs" />
+    <Compile Include="IResource.cs" />
     <Compile Include="ISocket.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageHandler.cs" />
     <Compile Include="MessageType.cs" />
+    <Compile Include="Option.cs" />
+    <Compile Include="OptionType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="RequestMethod.cs" />
     <Compile Include="Response.cs" />
-    <Compile Include="ResponseCode.cs" />
+    <Compile Include="MessageCode.cs" />
     <Compile Include="ResponseError.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
