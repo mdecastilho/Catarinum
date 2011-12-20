@@ -1,5 +1,5 @@
 ﻿namespace Catarinum {
-    public enum OptionType {
+    public enum OptionNumber {
         ContentType = 1,
         MaxAge = 2,
         ProxyUri = 3,

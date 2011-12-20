@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Catarinum {
     public abstract class Message {
-        private int _version = 1;
-        private int _optionCount;
+        private readonly List<Option> _options;
         public int Id { get; private set; }
         public MessageType Type { get; private set; }
         public CodeRegistry Code { get; private set; }
         public byte[] Payload { get; set; }
-        public List<Option> Options;
-        public string Source { get; set; }
-        public string Destination { get; set; }
+        public string RemoteAddress { get; set; }
 
         public bool IsConfirmable {
             get { return Type.Equals(MessageType.Confirmable); }
@@ -28,15 +26,34 @@ namespace Catarinum {
             get { return Type.Equals(MessageType.Reset); }
         }
 
+        public IEnumerable<Option> Options {
+            get { return _options; }
+        }
+
+        public int OptionCount {
+            get { return Options.Count(); }
+        }
+
+        public Option Token {
+            get {
+                var token = _options.FirstOrDefault(o => o.Number.Equals(OptionNumber.Token));
+                return token ?? new Option(OptionNumber.Token);
+            }
+        }
+
         protected Message(int id, MessageType type, CodeRegistry code) {
             Id = id;
             Type = type;
             Code = code;
-            Options = new List<Option>();
+            _options = new List<Option>();
         }
 
-        public bool MatchToken(byte[] token) {
-            return Options.MatchToken(token);
+        public void AddOption(Option option) {
+            _options.Add(option);
+        }
+
+        public bool MatchToken(Message message) {
+            return Options.MatchToken(message.Token.Value);
         }
     }
 }

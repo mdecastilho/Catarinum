@@ -49,7 +49,9 @@
     <Compile Include="MessageHandler.cs" />
     <Compile Include="MessageType.cs" />
     <Compile Include="Option.cs" />
-    <Compile Include="OptionType.cs" />
+    <Compile Include="OptionFormat.cs" />
+    <Compile Include="OptionHelper.cs" />
+    <Compile Include="OptionNumber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="Response.cs" />

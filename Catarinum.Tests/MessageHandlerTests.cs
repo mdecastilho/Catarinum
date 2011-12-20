@@ -64,7 +64,7 @@ namespace Catarinum.Tests {
         public void Response_source_should_match_request_destination() {
             var request = CreateRequest(true);
             _handler.HandleRequest(request);
-            _socketMock.Verify(s => s.Send(It.Is<Response>(r => r.Source.Equals(request.Destination))));
+            _socketMock.Verify(s => s.Send(It.Is<Response>(r => r.RemoteAddress.Equals(request.RemoteAddress))));
         }
 
         [Test]
@@ -77,9 +77,8 @@ namespace Catarinum.Tests {
         [Test]
         public void Separate_response_token_should_match_request_token() {
             var request = CreateRequest(true);
-            var token = Util.GetBytes(0x71);
             _handler.HandleRequest(request);
-            _socketMock.Verify(s => s.Send(It.Is<Response>(m => m.MatchToken(token))));
+            _socketMock.Verify(s => s.Send(It.Is<Response>(m => m.MatchToken(request))));
         }
 
         [Test]
@@ -92,16 +91,16 @@ namespace Catarinum.Tests {
         [Test]
         public void Piggy_backed_response_token_should_match_request_token() {
             var request = CreateRequestWithPiggyBackedResponse();
-            var token = Util.GetBytes(0x71);
             _handler.HandleRequest(request);
-            _socketMock.Verify(s => s.Send(It.Is<Response>(m => m.MatchToken(token))));
+            _socketMock.Verify(s => s.Send(It.Is<Response>(m => m.MatchToken(request))));
         }
 
         private static Request CreateRequest(bool confirmable) {
-            var request = new Request(0x7d34, CodeRegistry.Get, confirmable) { Destination = "127.0.0.1:50120" };
-            request.Options.Add(new Option { Type = OptionType.UriPath, Value = Util.GetBytes("GET /temperature") });
-            var token = new Option { Type = OptionType.Token, Value = Util.GetBytes(0x71) };
-            request.Options.Add(token);
+            var request = new Request(0x7d34, CodeRegistry.Get, confirmable) { RemoteAddress = "127.0.0.1:50120" };
+            var uriPath = new Option(OptionNumber.UriPath, Util.GetBytes("temperature"));
+            var token = new Option(OptionNumber.Token, Util.GetBytes(0x71));
+            request.AddOption(uriPath);
+            request.AddOption(token);
             return request;
         }
 

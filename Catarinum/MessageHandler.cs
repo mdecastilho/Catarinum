@@ -14,7 +14,7 @@ namespace Catarinum {
         }
 
         public void HandleRequest(Request request) {
-            var uri = request.Options.FirstOrDefault(o => o.Type == OptionType.UriPath).Value;
+            var uri = request.Options.FirstOrDefault(o => o.Number == OptionNumber.UriPath).Value;
 
             if (!IsDuplicatedRequest(request)) {
                 if (_resource.IsContextMissing(uri)) {
@@ -46,13 +46,13 @@ namespace Catarinum {
         }
 
         private void Accept(Request request) {
-            var ack = new EmptyMessage(request.Id, MessageType.Acknowledgement) { Source = request.Destination };
+            var ack = new EmptyMessage(request.Id, MessageType.Acknowledgement) { RemoteAddress = request.RemoteAddress };
             _socket.Send(ack);
         }
 
         private void Reject(Request request) {
             if (request.IsConfirmable) {
-                var reset = new EmptyMessage(request.Id, MessageType.Reset) { Source = request.Destination };
+                var reset = new EmptyMessage(request.Id, MessageType.Reset) { RemoteAddress = request.RemoteAddress };
                 _socket.Send(reset);
             }
         }
@@ -60,7 +60,7 @@ namespace Catarinum {
         private void Respond(Request request, byte[] uri, bool isPiggyBacked = false) {
             var id = isPiggyBacked ? request.Id : 1;
             var type = isPiggyBacked ? MessageType.Acknowledgement : request.Type;
-            var response = new Response(id, type, CodeRegistry.Content) { Source = request.Destination };
+            var response = new Response(id, type, CodeRegistry.Content) { RemoteAddress = request.RemoteAddress };
 
             try {
                 response.Payload = _resource.Get(uri);
@@ -69,10 +69,10 @@ namespace Catarinum {
                 response = new Response(id, type, error.Code);
             }
 
-            var token = request.Options.FirstOrDefault(o => o.Type == OptionType.Token);
+            var token = request.Options.FirstOrDefault(o => o.Number == OptionNumber.Token);
 
             if (token != null) {
-                response.Options.Add(token);
+                response.AddOption(token);
             }
 
             _socket.Send(response);
