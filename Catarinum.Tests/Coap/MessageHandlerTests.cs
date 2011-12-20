@@ -1,4 +1,5 @@
-﻿using Catarinum.Coap;
+﻿using System;
+using Catarinum.Coap;
 using Moq;
 using NUnit.Framework;
 
@@ -20,14 +21,14 @@ namespace Catarinum.Tests.Coap {
         public void Should_send_ack_if_confirmable_request() {
             var request = CreateRequest(true);
             _handler.HandleRequest(request);
-            _socketMock.Verify(s => s.Send(It.Is<EmptyMessage>(m => m.IsAcknowledgement)));
+            _socketMock.Verify(s => s.Send(It.Is<Message>(m => m.IsAcknowledgement)));
         }
 
         [Test]
         public void Should_not_send_ack_if_non_confirmable_request() {
             var request = CreateRequest(false);
             _handler.HandleRequest(request);
-            _socketMock.Verify(s => s.Send(It.Is<EmptyMessage>(m => m.IsAcknowledgement)), Times.Never());
+            _socketMock.Verify(s => s.Send(It.Is<Message>(m => m.IsAcknowledgement)), Times.Never());
         }
 
         [Test]
@@ -35,7 +36,7 @@ namespace Catarinum.Tests.Coap {
             var request = CreateRequest(true);
             _resourceMock.Setup(r => r.IsContextMissing(It.IsAny<byte[]>())).Returns(true);
             _handler.HandleRequest(request);
-            _socketMock.Verify(s => s.Send(It.Is<EmptyMessage>(m => m.IsReset)));
+            _socketMock.Verify(s => s.Send(It.Is<Message>(m => m.IsReset)));
         }
 
         [Test]
@@ -43,7 +44,7 @@ namespace Catarinum.Tests.Coap {
             var request = CreateRequest(false);
             _resourceMock.Setup(r => r.IsContextMissing(It.IsAny<byte[]>())).Returns(true);
             _handler.HandleRequest(request);
-            _socketMock.Verify(s => s.Send(It.Is<EmptyMessage>(m => m.IsReset)), Times.Never());
+            _socketMock.Verify(s => s.Send(It.Is<Message>(m => m.IsReset)), Times.Never());
         }
 
         [Test]
@@ -65,21 +66,21 @@ namespace Catarinum.Tests.Coap {
         public void Response_source_should_match_request_destination() {
             var request = CreateRequest(true);
             _handler.HandleRequest(request);
-            _socketMock.Verify(s => s.Send(It.Is<Response>(r => r.RemoteAddress.Equals(request.RemoteAddress))));
+            _socketMock.Verify(s => s.Send(It.Is<Response>(r => r.Uri.Equals(request.Uri))));
         }
 
         [Test]
         public void Separate_response_ack_id_should_match_request_id() {
             var request = CreateRequest(true);
             _handler.HandleRequest(request);
-            _socketMock.Verify(s => s.Send(It.Is<EmptyMessage>(m => m.Id == 0x7d34)));
+            _socketMock.Verify(s => s.Send(It.Is<Message>(m => m.Id == 0x7d34)));
         }
 
         [Test]
         public void Separate_response_token_should_match_request_token() {
             var request = CreateRequest(true);
             _handler.HandleRequest(request);
-            _socketMock.Verify(s => s.Send(It.Is<Response>(m => m.MatchToken(request))));
+            _socketMock.Verify(s => s.Send(It.Is<Response>(m => m.Token.Equals(request.Token))));
         }
 
         [Test]
@@ -93,15 +94,13 @@ namespace Catarinum.Tests.Coap {
         public void Piggy_backed_response_token_should_match_request_token() {
             var request = CreateRequestWithPiggyBackedResponse();
             _handler.HandleRequest(request);
-            _socketMock.Verify(s => s.Send(It.Is<Response>(m => m.MatchToken(request))));
+            _socketMock.Verify(s => s.Send(It.Is<Response>(m => m.Token.Equals(request.Token))));
         }
 
         private static Request CreateRequest(bool confirmable) {
-            var request = new Request(0x7d34, CodeRegistry.Get, confirmable) { RemoteAddress = "127.0.0.1:50120" };
-            var uriPath = new Option(OptionNumber.UriPath, Util.GetBytes("temperature"));
-            var token = new Option(OptionNumber.Token, Util.GetBytes(0x71));
-            request.AddOption(uriPath);
-            request.AddOption(token);
+            var request = new Request(0x7d34, CodeRegistry.Get, confirmable);
+            request.AddUri(new Uri("coap://127.0.0.1/temperature"));
+            request.AddToken(Util.GetBytes(0x71));
             return request;
         }
 

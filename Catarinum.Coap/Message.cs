@@ -1,14 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Catarinum.Coap {
-    public abstract class Message {
+    public class Message {
         private readonly List<Option> _options;
         public int Id { get; private set; }
         public MessageType Type { get; private set; }
         public CodeRegistry Code { get; private set; }
         public byte[] Payload { get; set; }
-        public string RemoteAddress { get; set; }
+        public Uri Uri { get; private set; }
+
+        public byte[] Token {
+            get {
+                var token = _options.FirstOrDefault(o => o.Number.Equals(OptionNumber.Token));
+                return token != null ? token.Value : new Option(OptionNumber.Token).Value;
+            }
+        }
 
         public bool IsConfirmable {
             get { return Type.Equals(MessageType.Confirmable); }
@@ -26,6 +34,10 @@ namespace Catarinum.Coap {
             get { return Type.Equals(MessageType.Reset); }
         }
 
+        public bool IsEmpty {
+            get { return Code.Equals(CodeRegistry.Empty); }
+        }
+
         public IEnumerable<Option> Options {
             get { return _options; }
         }
@@ -34,10 +46,15 @@ namespace Catarinum.Coap {
             get { return Options.Count(); }
         }
 
-        public Option Token {
-            get {
-                var token = _options.FirstOrDefault(o => o.Number.Equals(OptionNumber.Token));
-                return token ?? new Option(OptionNumber.Token);
+        public Message(int id, MessageType type)
+            : this(id, type, CodeRegistry.Empty) {
+
+            if (IsConfirmable) {
+                throw new ArgumentException("Confirmable message MUST NOT be empty.");
+            }
+
+            if (IsNonConfirmable) {
+                throw new ArgumentException("Non-confirmable message MUST NOT be empty.");
             }
         }
 
@@ -52,8 +69,15 @@ namespace Catarinum.Coap {
             _options.Add(option);
         }
 
-        public bool MatchToken(Message message) {
-            return Options.MatchToken(message.Token.Value);
+        public void AddUri(Uri uri) {
+            Uri = uri;
+            var parser = new CoapUriParser();
+            _options.AddRange(parser.GetUriPath(uri));
+            _options.AddRange(parser.GetUriQuery(uri));
+        }
+
+        public void AddToken(byte[] token) {
+            AddOption(new Option(OptionNumber.Token, token));
         }
     }
 }

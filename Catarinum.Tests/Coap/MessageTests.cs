@@ -1,14 +1,39 @@
-﻿using Catarinum.Coap;
+﻿using System;
+using Catarinum.Coap;
 using NUnit.Framework;
 
 namespace Catarinum.Tests.Coap {
     [TestFixture]
     public class MessageTests {
-        private TestMessage _message;
+        private Message _message;
 
         [SetUp]
         public void SetUp() {
-            _message = new TestMessage();
+            _message = new Message(1, MessageType.Acknowledgement);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Confirmable message MUST NOT be empty.")]
+        public void Confirmable_message_should_not_be_empty() {
+            new Message(1, MessageType.Confirmable);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Non-confirmable message MUST NOT be empty.")]
+        public void Non_confirmable_message_message_should_not_be_empty() {
+            new Message(1, MessageType.NonConfirmable);
+        }
+
+        [Test]
+        public void Acknowledgement_message_should_be_empty() {
+            var message = new Message(1, MessageType.Acknowledgement);
+            Assert.IsNotNull(message);
+        }
+
+        [Test]
+        public void Reset_message_should_be_empty() {
+            var message = new Message(1, MessageType.Reset);
+            Assert.IsNotNull(message);
         }
 
         [Test]
@@ -27,30 +52,35 @@ namespace Catarinum.Tests.Coap {
         }
 
         [Test]
+        public void Should_add_uri() {
+            var uri = new Uri("coap://127.0.0.1/temperature");
+            _message.AddUri(uri);
+            Assert.AreEqual(1, _message.OptionCount);
+        }
+
+        [Test]
+        public void Should_get_uri() {
+            var uri = new Uri("coap://127.0.0.1/temperature");
+            _message.AddUri(uri);
+            Assert.AreEqual(uri, _message.Uri);
+        }
+
+        [Test]
+        public void Should_add_token() {
+            _message.AddToken(Util.GetBytes(0x71));
+            Assert.AreEqual(1, _message.OptionCount);
+        }
+
+        [Test]
         public void Should_get_token() {
             var token = Util.GetBytes(0x71);
-            _message.AddOption(new Option(OptionNumber.Token, token));
-            Assert.AreEqual(token, _message.Token.Value);
+            _message.AddToken(token);
+            Assert.AreEqual(token, _message.Token);
         }
 
         [Test]
         public void Should_get_empty_token_if_not_set() {
-            Assert.AreEqual(new byte[0], _message.Token.Value);
-        }
-
-        [Test]
-        public void Should_match_token() {
-            var token = Util.GetBytes(0x71);
-            _message.AddOption(new Option(OptionNumber.Token, token));
-            var message = new TestMessage();
-            message.AddOption(new Option(OptionNumber.Token, token));
-            Assert.IsTrue(_message.MatchToken(message));
-        }
-    }
-
-    public class TestMessage : Message {
-        public TestMessage()
-            : base(1, MessageType.Confirmable, CodeRegistry.Get) {
+            Assert.AreEqual(new byte[0], _message.Token);
         }
     }
 }

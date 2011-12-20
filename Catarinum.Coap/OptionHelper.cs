@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace Catarinum.Coap {
-    public static class OptionHelper {
+    internal static class OptionHelper {
         private static readonly Dictionary<OptionNumber, OptionFormat> Formats = new Dictionary<OptionNumber, OptionFormat> {
             { OptionNumber.ContentType, OptionFormat.Uint },
             { OptionNumber.MaxAge, OptionFormat.Uint },

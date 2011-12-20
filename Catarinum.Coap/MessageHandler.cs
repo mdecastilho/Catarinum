@@ -46,13 +46,15 @@ namespace Catarinum.Coap {
         }
 
         private void Accept(Request request) {
-            var ack = new EmptyMessage(request.Id, MessageType.Acknowledgement) { RemoteAddress = request.RemoteAddress };
+            var ack = new Message(request.Id, MessageType.Acknowledgement);
+            ack.AddUri(request.Uri);
             _socket.Send(ack);
         }
 
         private void Reject(Request request) {
             if (request.IsConfirmable) {
-                var reset = new EmptyMessage(request.Id, MessageType.Reset) { RemoteAddress = request.RemoteAddress };
+                var reset = new Message(request.Id, MessageType.Reset);
+                reset.AddUri(request.Uri);
                 _socket.Send(reset);
             }
         }
@@ -60,7 +62,8 @@ namespace Catarinum.Coap {
         private void Respond(Request request, byte[] uri, bool isPiggyBacked = false) {
             var id = isPiggyBacked ? request.Id : 1;
             var type = isPiggyBacked ? MessageType.Acknowledgement : request.Type;
-            var response = new Response(id, type, CodeRegistry.Content) { RemoteAddress = request.RemoteAddress };
+            var response = new Response(id, type, CodeRegistry.Content);
+            response.AddUri(request.Uri);
 
             try {
                 response.Payload = _resource.Get(uri);
