@@ -1,4 +1,4 @@
-namespace Catarinum {
+namespace Catarinum.Coap {
     public class EndPoint {
         private const int ResponseTimeout = 2000;
         private const double ResponseRandomFactor = 1.5;

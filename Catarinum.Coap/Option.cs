@@ -1,8 +1,5 @@
-﻿namespace Catarinum {
+﻿namespace Catarinum.Coap {
     public class Option {
-        private int _delta;
-        private int _lenght;
-
         public OptionNumber Number { get; private set; }
         public byte[] Value { get; set; }
 

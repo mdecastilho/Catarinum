@@ -1,7 +1,8 @@
-﻿using Moq;
+﻿using Catarinum.Coap;
+using Moq;
 using NUnit.Framework;
 
-namespace Catarinum.Tests {
+namespace Catarinum.Tests.Coap {
     [TestFixture]
     public class MessageHandlerTests {
         private Mock<ISocket> _socketMock;

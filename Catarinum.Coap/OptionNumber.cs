@@ -1,4 +1,4 @@
-﻿namespace Catarinum {
+﻿namespace Catarinum.Coap {
     public enum OptionNumber {
         ContentType = 1,
         MaxAge = 2,

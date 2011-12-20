@@ -52,21 +52,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MessageHandlerTests.cs" />
-    <Compile Include="EmptyMessageTests.cs" />
-    <Compile Include="MessageTests.cs" />
-    <Compile Include="OptionTests.cs" />
+    <Compile Include="Coap\MessageHandlerTests.cs" />
+    <Compile Include="Coap\EmptyMessageTests.cs" />
+    <Compile Include="Coap\MessageTests.cs" />
+    <Compile Include="Coap\OptionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RequestTests.cs" />
-    <Compile Include="ResponseTests.cs" />
+    <Compile Include="Coap\RequestTests.cs" />
+    <Compile Include="Coap\ResponseTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Catarinum\Catarinum.csproj">
+    <ProjectReference Include="..\Catarinum.Coap\Catarinum.Coap.csproj">
       <Project>{CB18A362-7769-46F4-A3AC-59F60956E6D3}</Project>
-      <Name>Catarinum</Name>
+      <Name>Catarinum.Coap</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

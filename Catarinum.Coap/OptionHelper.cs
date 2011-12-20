@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Catarinum {
+namespace Catarinum.Coap {
     public static class OptionHelper {
         private static readonly Dictionary<OptionNumber, OptionFormat> Formats = new Dictionary<OptionNumber, OptionFormat> {
             { OptionNumber.ContentType, OptionFormat.Uint },

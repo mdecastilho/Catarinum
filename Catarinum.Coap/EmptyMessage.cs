@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Catarinum {
+namespace Catarinum.Coap {
     public class EmptyMessage : Message {
         public EmptyMessage(int id, MessageType type)
             : base(id, type, CodeRegistry.Empty) {

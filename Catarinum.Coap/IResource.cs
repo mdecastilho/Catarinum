@@ -1,4 +1,4 @@
-﻿namespace Catarinum {
+﻿namespace Catarinum.Coap {
     public interface IResource {
         bool IsContextMissing(byte[] uri);
         bool CanGet(byte[] uri);

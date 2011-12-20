@@ -1,4 +1,4 @@
-﻿namespace Catarinum {
+﻿namespace Catarinum.Coap {
     public enum CodeRegistry {
         Empty = 0,
         Get = 1,

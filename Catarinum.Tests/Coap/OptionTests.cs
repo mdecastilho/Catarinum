@@ -1,6 +1,7 @@
+using Catarinum.Coap;
 using NUnit.Framework;
 
-namespace Catarinum.Tests {
+namespace Catarinum.Tests.Coap {
     [TestFixture]
     public class OptionTests {
         [Test]

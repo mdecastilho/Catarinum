@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Catarinum {
+namespace Catarinum.Coap {
     public abstract class Message {
         private readonly List<Option> _options;
         public int Id { get; private set; }

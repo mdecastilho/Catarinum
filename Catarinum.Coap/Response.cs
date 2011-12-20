@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Catarinum {
+namespace Catarinum.Coap {
     public class Response : Message {
         public bool IsPiggyBacked {
             get { return IsAcknowledgement && Code == CodeRegistry.Content && Payload.Length > 0; }

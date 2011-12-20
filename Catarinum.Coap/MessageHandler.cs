@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Catarinum {
+namespace Catarinum.Coap {
     public class MessageHandler {
         private readonly ISocket _socket;
         private readonly IResource _resource;

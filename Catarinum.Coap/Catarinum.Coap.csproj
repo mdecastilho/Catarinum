@@ -8,8 +8,8 @@
     <ProjectGuid>{CB18A362-7769-46F4-A3AC-59F60956E6D3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Catarinum</RootNamespace>
-    <AssemblyName>Catarinum</AssemblyName>
+    <RootNamespace>Catarinum.Coap</RootNamespace>
+    <AssemblyName>Catarinum.Coap</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

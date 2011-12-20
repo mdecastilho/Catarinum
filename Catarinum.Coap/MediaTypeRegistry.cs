@@ -1,4 +1,4 @@
-﻿namespace Catarinum {
+﻿namespace Catarinum.Coap {
     public enum MediaTypeRegistry {
         TextPlain = 0,
         ApplicationLinkFormat = 40,

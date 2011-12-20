@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Catarinum {
+namespace Catarinum.Coap {
     public class Request : Message {
         public Request(int id, CodeRegistry code, bool confirmable)
             : base(id, confirmable ? MessageType.Confirmable : MessageType.NonConfirmable, code) {
