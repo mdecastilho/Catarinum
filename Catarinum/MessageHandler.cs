@@ -46,13 +46,13 @@ namespace Catarinum {
         }
 
         private void Accept(Request request) {
-            var ack = new Response(request.Id, MessageType.Acknowledgement) { Source = request.Destination };
+            var ack = new EmptyMessage(request.Id, MessageType.Acknowledgement) { Source = request.Destination };
             _socket.Send(ack);
         }
 
         private void Reject(Request request) {
             if (request.IsConfirmable) {
-                var reset = new Response(request.Id, MessageType.Reset) { Source = request.Destination };
+                var reset = new EmptyMessage(request.Id, MessageType.Reset) { Source = request.Destination };
                 _socket.Send(reset);
             }
         }

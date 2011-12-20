@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Catarinum {
-    public class Message {
-        // Implementations of this specification MUST set this field
-        // to 1.  Other values are reserved for future versions.
+    public abstract class Message {
         private int _version = 1;
         private int _optionCount;
         public int Id { get; private set; }
@@ -31,55 +28,15 @@ namespace Catarinum {
             get { return Type.Equals(MessageType.Reset); }
         }
 
-        public bool IsEmpty {
-            get { return (int) Code == 0; }
-        }
-
-        public bool IsRequest {
-            get { return (int) Code >= 1 && (int) Code <= 31; }
-        }
-
-        public bool IsResponse {
-            get { return (int) Code >= 64 && (int) Code <= 191; }
-        }
-
-        public bool IsPiggyBackedResponse {
-            get { return IsAcknowledgement && IsResponse && Payload.Length > 0; }
-        }
-
-        public Message(int id, MessageType type, CodeRegistry code = CodeRegistry.Empty) {
+        protected Message(int id, MessageType type, CodeRegistry code) {
             Id = id;
             Type = type;
             Code = code;
             Options = new List<Option>();
-            Validate();
         }
 
-        private void Validate() {
-            if (IsConfirmable && IsEmpty) {
-                throw new ArgumentException("Confirmable message MUST NOT be empty.");
-            }
-
-            if (IsNonConfirmable && IsEmpty) {
-                throw new ArgumentException("Non-confirmable message MUST NOT be empty.");
-            }
-
-            if (IsAcknowledgement && IsRequest) {
-                throw new ArgumentException("Acknowledgement message MUST NOT carry request.");
-            }
-
-            if (IsReset && (IsRequest || IsResponse)) {
-                throw new ArgumentException("Reset message MUST NOT carry request/response.");
-            }
+        public bool MatchToken(byte[] token) {
+            return Options.MatchToken(token);
         }
-
-        // If the Path MTU is not known for a destination,
-        // an IP MTU of 1280 bytes SHOULD be assumed; if nothing is known about
-        // the size of the headers, good upper bounds are 1152 bytes for the
-        // message size and 1024 bytes for the payload size.
-
-        //public byte[] Header { get; set; }
-        //public byte[] Options { get; set; }
-        //
     }
 }
