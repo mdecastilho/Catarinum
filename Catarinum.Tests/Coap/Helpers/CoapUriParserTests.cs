@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using Catarinum.Coap;
+using Catarinum.Coap.Helpers;
 using NUnit.Framework;
 
-namespace Catarinum.Tests.Coap {
+namespace Catarinum.Tests.Coap.Helpers {
     [TestFixture]
     public class CoapUriParserTests {
         private CoapUriParser _parser;
@@ -37,7 +37,7 @@ namespace Catarinum.Tests.Coap {
         public void Should_parse_uri_with_special_characters() {
             var uri = new Uri("coap://[2001:db8::2:1]/%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF");
             var uriPaths = _parser.GetUriPath(uri);
-            Assert.AreEqual("%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF", Util.GetString(uriPaths.ElementAt(0).Value));
+            Assert.AreEqual("%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF", Converter.GetString(uriPaths.ElementAt(0).Value));
         }
 
         [Test]

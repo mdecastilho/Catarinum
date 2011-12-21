@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace Catarinum.Coap {
     public class MessageHandler {
@@ -14,7 +13,7 @@ namespace Catarinum.Coap {
         }
 
         public void HandleRequest(Request request) {
-            var uri = request.Options.FirstOrDefault(o => o.Number == OptionNumber.UriPath).Value;
+            var uri = request.GetFirstOption(OptionNumber.UriPath).Value;
 
             if (!IsDuplicatedRequest(request)) {
                 if (_resource.IsContextMissing(uri)) {
@@ -47,14 +46,12 @@ namespace Catarinum.Coap {
 
         private void Accept(Request request) {
             var ack = new Message(request.Id, MessageType.Acknowledgement);
-            ack.AddUri(request.Uri);
             _socket.Send(ack);
         }
 
         private void Reject(Request request) {
             if (request.IsConfirmable) {
                 var reset = new Message(request.Id, MessageType.Reset);
-                reset.AddUri(request.Uri);
                 _socket.Send(reset);
             }
         }
@@ -63,7 +60,6 @@ namespace Catarinum.Coap {
             var id = isPiggyBacked ? request.Id : 1;
             var type = isPiggyBacked ? MessageType.Acknowledgement : request.Type;
             var response = new Response(id, type, CodeRegistry.Content);
-            response.AddUri(request.Uri);
 
             try {
                 response.Payload = _resource.Get(uri);
@@ -72,12 +68,7 @@ namespace Catarinum.Coap {
                 response = new Response(id, type, error.Code);
             }
 
-            var token = request.Options.FirstOrDefault(o => o.Number == OptionNumber.Token);
-
-            if (token != null) {
-                response.AddOption(token);
-            }
-
+            response.AddToken(request.Token);
             _socket.Send(response);
         }
     }

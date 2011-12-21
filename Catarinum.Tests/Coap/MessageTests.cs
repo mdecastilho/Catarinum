@@ -1,5 +1,6 @@
 ﻿using System;
 using Catarinum.Coap;
+using Catarinum.Coap.Helpers;
 using NUnit.Framework;
 
 namespace Catarinum.Tests.Coap {
@@ -52,28 +53,14 @@ namespace Catarinum.Tests.Coap {
         }
 
         [Test]
-        public void Should_add_uri() {
-            var uri = new Uri("coap://127.0.0.1/temperature");
-            _message.AddUri(uri);
-            Assert.AreEqual(1, _message.OptionCount);
-        }
-
-        [Test]
-        public void Should_get_uri() {
-            var uri = new Uri("coap://127.0.0.1/temperature");
-            _message.AddUri(uri);
-            Assert.AreEqual(uri, _message.Uri);
-        }
-
-        [Test]
         public void Should_add_token() {
-            _message.AddToken(Util.GetBytes(0x71));
+            _message.AddToken(Converter.GetBytes(0x71));
             Assert.AreEqual(1, _message.OptionCount);
         }
 
         [Test]
         public void Should_get_token() {
-            var token = Util.GetBytes(0x71);
+            var token = Converter.GetBytes(0x71);
             _message.AddToken(token);
             Assert.AreEqual(token, _message.Token);
         }
@@ -81,6 +68,21 @@ namespace Catarinum.Tests.Coap {
         [Test]
         public void Should_get_empty_token_if_not_set() {
             Assert.AreEqual(new byte[0], _message.Token);
+        }
+
+        [Test]
+        public void Should_get_first_option() {
+            var token1 = Converter.GetBytes(0x71);
+            var token2 = Converter.GetBytes(0x72);
+            _message.AddToken(token1);
+            _message.AddToken(token2);
+            Assert.AreEqual(token1, _message.GetFirstOption(OptionNumber.Token).Value);
+        }
+
+        [Test]
+        public void Should_get_bytes() {
+            var bytes = _message.GetBytes();
+            Assert.AreEqual(4, bytes.Length);
         }
     }
 }

@@ -22,5 +22,21 @@ namespace Catarinum.Tests.Coap {
             var request = new Request(1, CodeRegistry.Get, false);
             Assert.IsNotNull(request);
         }
+
+        [Test]
+        public void Should_add_uri() {
+            var request = new Request(1, CodeRegistry.Get, true);
+            var uri = new Uri("coap://127.0.0.1/temperature");
+            request.AddUri(uri);
+            Assert.AreEqual(1, request.OptionCount);
+        }
+
+        [Test]
+        public void Should_get_uri() {
+            var request = new Request(1, CodeRegistry.Get, true);
+            var uri = new Uri("coap://127.0.0.1/temperature");
+            request.AddUri(uri);
+            Assert.AreEqual(uri, request.Uri);
+        }
     }
 }

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Catarinum.Coap {
+namespace Catarinum.Coap.Helpers {
     public class CoapUriParser {
         public string GetDestinationAddress(Uri uri) {
             return uri.Host;
@@ -18,7 +18,7 @@ namespace Catarinum.Coap {
             }
 
             var paths = uri.AbsolutePath.Split('/').Skip(1);
-            return paths.Select(p => new Option(OptionNumber.UriPath, Util.GetBytes(p)));
+            return paths.Select(p => new Option(OptionNumber.UriPath, Converter.GetBytes(p)));
         }
 
         public IEnumerable<Option> GetUriQuery(Uri uri) {
@@ -27,7 +27,7 @@ namespace Catarinum.Coap {
             }
 
             var paths = uri.Query.Split('&');
-            return paths.Select(p => new Option(OptionNumber.UriQuery, Util.GetBytes(p)));
+            return paths.Select(p => new Option(OptionNumber.UriQuery, Converter.GetBytes(p)));
         }
     }
 }

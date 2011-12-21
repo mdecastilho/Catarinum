@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Catarinum.Coap.Helpers;
 
 namespace Catarinum.Coap {
     public class Message {
@@ -9,12 +10,11 @@ namespace Catarinum.Coap {
         public MessageType Type { get; private set; }
         public CodeRegistry Code { get; private set; }
         public byte[] Payload { get; set; }
-        public Uri Uri { get; private set; }
 
         public byte[] Token {
             get {
-                var token = _options.FirstOrDefault(o => o.Number.Equals(OptionNumber.Token));
-                return token != null ? token.Value : new Option(OptionNumber.Token).Value;
+                var token = GetFirstOption(OptionNumber.Token);
+                return token != null ? token.Value : new byte[0];
             }
         }
 
@@ -62,6 +62,7 @@ namespace Catarinum.Coap {
             Id = id;
             Type = type;
             Code = code;
+            Payload = new byte[0];
             _options = new List<Option>();
         }
 
@@ -69,15 +70,21 @@ namespace Catarinum.Coap {
             _options.Add(option);
         }
 
-        public void AddUri(Uri uri) {
-            Uri = uri;
-            var parser = new CoapUriParser();
-            _options.AddRange(parser.GetUriPath(uri));
-            _options.AddRange(parser.GetUriQuery(uri));
-        }
-
         public void AddToken(byte[] token) {
             AddOption(new Option(OptionNumber.Token, token));
+        }
+
+        public Option GetFirstOption(OptionNumber number) {
+            return _options.FirstOrDefault(o => o.Number == (int) number);
+        }
+
+        public byte[] GetBytes() {
+            var helper = new MessageHelper();
+            return helper.GetBytes(this);
+        }
+
+        protected void AddOptions(IEnumerable<Option> options) {
+            _options.AddRange(options);
         }
     }
 }

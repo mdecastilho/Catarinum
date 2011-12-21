@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
-namespace Catarinum.Coap {
+namespace Catarinum.Coap.Helpers {
     internal static class OptionHelper {
+        // this should go somewhere else
         private static readonly Dictionary<OptionNumber, OptionFormat> Formats = new Dictionary<OptionNumber, OptionFormat> {
             { OptionNumber.ContentType, OptionFormat.Uint },
             { OptionNumber.MaxAge, OptionFormat.Uint },
@@ -19,10 +19,6 @@ namespace Catarinum.Coap {
             { OptionNumber.UriQuery, OptionFormat.String },
             { OptionNumber.IfNoneMatch, OptionFormat.Uint },
         };
-
-        public static bool MatchToken(this IEnumerable<Option> options, byte[] token) {
-            return options.FirstOrDefault(o => o.Value.SequenceEqual(token)) != null;
-        }
 
         public static OptionFormat GetOptionFormat(OptionNumber number) {
             return Formats[number];

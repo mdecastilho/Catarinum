@@ -1,10 +1,12 @@
 using System;
 using System.Text;
 
-namespace Catarinum.Coap {
-    public class Util {
+namespace Catarinum.Coap.Helpers {
+    public class Converter {
+        private static readonly Encoding Encoding = Encoding.UTF8;
+
         public static byte[] GetBytes(string s) {
-            return Encoding.UTF8.GetBytes(s);
+            return Encoding.GetBytes(s);
         }
 
         public static byte[] GetBytes(int value) {
@@ -12,7 +14,7 @@ namespace Catarinum.Coap {
         }
 
         public static string GetString(byte[] bytes) {
-            return Encoding.UTF8.GetString(bytes);
+            return Encoding.GetString(bytes);
         }
 
         public static string GetHexString(byte[] bytes) {

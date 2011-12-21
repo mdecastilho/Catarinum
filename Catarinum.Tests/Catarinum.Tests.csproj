@@ -52,10 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coap\Helpers\DatagramHelperTests.cs" />
+    <Compile Include="Coap\Helpers\MessageHelperTests.cs" />
     <Compile Include="Coap\MessageHandlerTests.cs" />
     <Compile Include="Coap\MessageTests.cs" />
     <Compile Include="Coap\OptionTests.cs" />
-    <Compile Include="Coap\CoapUriParserTests.cs" />
+    <Compile Include="Coap\Helpers\CoapUriParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Coap\RequestTests.cs" />
     <Compile Include="Coap\ResponseTests.cs" />
