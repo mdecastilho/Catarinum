@@ -16,23 +16,18 @@ namespace Catarinum.Coap {
             var uri = request.GetFirstOption(OptionNumber.UriPath).Value;
 
             if (!IsDuplicatedRequest(request)) {
-                if (_resource.IsContextMissing(uri)) {
-                    Reject(request);
+                if (IsPiggyBacked(uri)) {
+                    Respond(request, uri, true);
                 }
                 else {
-                    if (IsPiggyBacked(uri)) {
-                        Respond(request, uri, true);
-                    }
-                    else {
-                        if (request.IsConfirmable) {
-                            Accept(request);
-                        }
-
-                        Respond(request, uri);
+                    if (request.IsConfirmable) {
+                        Accept(request);
                     }
 
-                    _messages.Add(request.Id);
+                    Respond(request, uri);
                 }
+
+                _messages.Add(request.Id);
             }
         }
 
@@ -47,13 +42,6 @@ namespace Catarinum.Coap {
         private void Accept(Request request) {
             var ack = new Message(request.Id, MessageType.Acknowledgement);
             _socket.Send(ack);
-        }
-
-        private void Reject(Request request) {
-            if (request.IsConfirmable) {
-                var reset = new Message(request.Id, MessageType.Reset);
-                _socket.Send(reset);
-            }
         }
 
         private void Respond(Request request, byte[] uri, bool isPiggyBacked = false) {

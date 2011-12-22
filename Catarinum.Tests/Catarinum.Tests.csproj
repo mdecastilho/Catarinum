@@ -52,8 +52,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coap\Examples.cs" />
     <Compile Include="Coap\Helpers\DatagramHelperTests.cs" />
     <Compile Include="Coap\Helpers\MessageHelperTests.cs" />
+    <Compile Include="Coap\Util.cs" />
     <Compile Include="Coap\MessageHandlerTests.cs" />
     <Compile Include="Coap\MessageTests.cs" />
     <Compile Include="Coap\OptionTests.cs" />

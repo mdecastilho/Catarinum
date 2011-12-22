@@ -6,6 +6,10 @@ namespace Catarinum.Coap {
             get { return IsAcknowledgement && Code == CodeRegistry.Content && Payload.Length > 0; }
         }
 
+        public bool IsSeparate {
+            get { return !IsPiggyBacked; }
+        }
+
         public Response(int id, MessageType type, CodeRegistry code)
             : base(id, type, code) {
 
