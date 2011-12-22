@@ -58,7 +58,7 @@ namespace Catarinum.Examples.Server {
                     var bytes = new byte[bytesRead];
                     Buffer.BlockCopy(connection.Buffer, 0, bytes, 0, bytesRead);
                     _transportLayer.Socket = connection.Socket;
-                    _handler.HandleRequest((Request) MessageConverter.GetMessage(bytes));
+                    _handler.HandleRequest((Request) MessageSerializer.Unserialize(bytes));
                     connection.Socket.BeginReceive(connection.Buffer, 0, connection.Buffer.Length, ReceiveCallback, connection);
                 }
                 else {

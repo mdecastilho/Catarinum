@@ -6,7 +6,7 @@ namespace Catarinum.Examples.Server {
         public ISocket Socket { get; set; }
 
         public void Send(Message message) {
-            var bytes = MessageConverter.GetBytes(message);
+            var bytes = MessageSerializer.Serialize(message);
             Socket.Send(bytes, bytes.Length);
         }
     }

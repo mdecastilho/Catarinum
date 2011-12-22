@@ -18,7 +18,7 @@ namespace Catarinum.Examples.Client {
             try {
                 socket.Connect(endPoint);
                 Console.WriteLine(string.Format("Conectou em {0}", endPoint));
-                socket.Send(MessageConverter.GetBytes(request));
+                socket.Send(MessageSerializer.Serialize(request));
                 Console.WriteLine("Enviou mensagem!");
                 socket.Close();
             }

@@ -1,18 +1,18 @@
 namespace Catarinum.Coap.Helpers {
-    public class MessageConverter {
-        public static byte[] GetBytes(Message message) {
+    public class MessageSerializer {
+        public static byte[] Serialize(Message message) {
             var writer = new DatagramWriter();
             writer.Write(Message.Version, Message.VersionBits);
             writer.Write((int) message.Type, Message.TypeBits);
             writer.Write(message.OptionCount, Message.OptionCountBits);
             writer.Write((int) message.Code, Message.CodeBits);
             writer.Write(message.Id, Message.IdBits);
-            writer.WriteBytes(GetOptionBytes(message));
+            writer.WriteBytes(GetOptions(message));
             writer.WriteBytes(message.Payload);
             return writer.GetBytes();
         }
 
-        public static Message GetMessage(byte[] bytes) {
+        public static Message Unserialize(byte[] bytes) {
             var reader = new DatagramReader(bytes);
             var version = reader.Read(Message.VersionBits);
             var type = (MessageType) reader.Read(Message.TypeBits);
@@ -34,7 +34,7 @@ namespace Catarinum.Coap.Helpers {
             return message;
         }
 
-        private static byte[] GetOptionBytes(Message message) {
+        private static byte[] GetOptions(Message message) {
             var writer = new DatagramWriter();
             var lastOptionNumber = 0;
 

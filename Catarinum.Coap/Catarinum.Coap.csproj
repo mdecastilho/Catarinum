@@ -43,7 +43,7 @@
     <Compile Include="Helpers\DatagramReader.cs" />
     <Compile Include="Helpers\DatagramWriter.cs" />
     <Compile Include="EndPoint.cs" />
-    <Compile Include="Helpers\MessageConverter.cs" />
+    <Compile Include="Helpers\MessageSerializer.cs" />
     <Compile Include="IResource.cs" />
     <Compile Include="ITransportLayer.cs" />
     <Compile Include="MediaTypeRegistry.cs" />
