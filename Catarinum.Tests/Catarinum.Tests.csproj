@@ -53,8 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Coap\Examples.cs" />
-    <Compile Include="Coap\Helpers\DatagramHelperTests.cs" />
-    <Compile Include="Coap\Helpers\MessageHelperTests.cs" />
+    <Compile Include="Coap\Helpers\DatagramWriterTests.cs" />
+    <Compile Include="Coap\Helpers\MessageConverterTests.cs" />
     <Compile Include="Coap\Util.cs" />
     <Compile Include="Coap\MessageHandlerTests.cs" />
     <Compile Include="Coap\MessageTests.cs" />

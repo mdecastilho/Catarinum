@@ -22,7 +22,7 @@ namespace Catarinum.Coap {
             }
         }
 
-        private static bool IsValidCodeRegistry(CodeRegistry code) {
+        public static bool IsValidCodeRegistry(CodeRegistry code) {
             return (int) code >= 64 && (int) code <= 191;
         }
     }

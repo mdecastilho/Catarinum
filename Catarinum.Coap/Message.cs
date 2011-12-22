@@ -1,15 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Catarinum.Coap.Helpers;
 
 namespace Catarinum.Coap {
     public class Message {
+        public const int Version = 1;
+        public const int VersionBits = 2;
+        public const int TypeBits = 2;
+        public const int OptionCountBits = 4;
+        public const int CodeBits = 8;
+        public const int IdBits = 16;
+        public const int OptionDeltaBits = 4;
+        public const int OptionLengthBits = 4;
         private readonly List<Option> _options;
         public int Id { get; private set; }
         public MessageType Type { get; private set; }
         public CodeRegistry Code { get; private set; }
         public byte[] Payload { get; set; }
+        public string RemoteAddress { get; set; }
 
         public byte[] Token {
             get {
@@ -76,11 +84,6 @@ namespace Catarinum.Coap {
 
         public Option GetFirstOption(OptionNumber number) {
             return _options.FirstOrDefault(o => o.Number == (int) number);
-        }
-
-        public byte[] GetBytes() {
-            var helper = new MessageHelper();
-            return helper.GetBytes(this);
         }
 
         protected void AddOptions(IEnumerable<Option> options) {

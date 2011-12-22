@@ -2,12 +2,12 @@
 
 namespace Catarinum.Coap {
     public class MessageHandler {
-        private readonly ISocket _socket;
+        private readonly ITransportLayer _transportLayer;
         private readonly IResource _resource;
         private readonly List<int> _messages;
 
-        public MessageHandler(ISocket socket, IResource resource) {
-            _socket = socket;
+        public MessageHandler(ITransportLayer transportLayer, IResource resource) {
+            _transportLayer = transportLayer;
             _resource = resource;
             _messages = new List<int>();
         }
@@ -15,8 +15,8 @@ namespace Catarinum.Coap {
         public void HandleRequest(Request request) {
             var uri = request.GetFirstOption(OptionNumber.UriPath).Value;
 
-            if (!IsDuplicatedRequest(request)) {
-                if (IsPiggyBacked(uri)) {
+            if (!IsDuplicated(request)) {
+                if (CanBePiggyBacked(uri)) {
                     Respond(request, uri, true);
                 }
                 else {
@@ -31,17 +31,17 @@ namespace Catarinum.Coap {
             }
         }
 
-        private bool IsDuplicatedRequest(Request request) {
+        private bool IsDuplicated(Request request) {
             return _messages.Contains(request.Id);
         }
 
-        private bool IsPiggyBacked(byte[] uri) {
+        private bool CanBePiggyBacked(byte[] uri) {
             return _resource.CanGet(uri);
         }
 
         private void Accept(Request request) {
             var ack = new Message(request.Id, MessageType.Acknowledgement);
-            _socket.Send(ack);
+            _transportLayer.Send(ack);
         }
 
         private void Respond(Request request, byte[] uri, bool isPiggyBacked = false) {
@@ -57,7 +57,7 @@ namespace Catarinum.Coap {
             }
 
             response.AddToken(request.Token);
-            _socket.Send(response);
+            _transportLayer.Send(response);
         }
     }
 }

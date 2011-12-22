@@ -1,19 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System.IO;
 
 namespace Catarinum.Coap.Helpers {
-    public class DatagramHelper {
+    public class DatagramWriter {
         private const int ByteSize = 8;
-        private List<byte> _bytes;
+        private MemoryStream _bytes;
         private byte _currentByte;
         private int _currentBitIndex;
 
-        public DatagramHelper() {
-            _bytes = new List<byte>();
+        public DatagramWriter() {
+            _bytes = new MemoryStream();
             ResetCurrentByte();
         }
 
-        public void AddBits(int value, int size) {
-            for (var i = size - 1; i >= 0; i--) {
+        public void Write(int value, int numBits) {
+            for (var i = numBits - 1; i >= 0; i--) {
                 var bit = (value >> i & 1) != 0;
 
                 if (bit) {
@@ -23,25 +23,25 @@ namespace Catarinum.Coap.Helpers {
                 --_currentBitIndex;
 
                 if (_currentBitIndex < 0) {
-                    AddCurrentByte();
+                    WriteCurrentByte();
                 }
             }
         }
 
-        public void AddBytes(byte[] bytes) {
-            _bytes.AddRange(bytes);
+        public void WriteBytes(byte[] bytes) {
+            _bytes.Write(bytes, 0, bytes.Length);
         }
 
         public byte[] GetBytes() {
-            AddCurrentByte();
+            WriteCurrentByte();
             var bytes = _bytes.ToArray();
-            _bytes = new List<byte>();
+            _bytes = new MemoryStream();
             return bytes;
         }
 
-        private void AddCurrentByte() {
+        private void WriteCurrentByte() {
             if (_currentBitIndex < ByteSize - 1) {
-                _bytes.Add(_currentByte);
+                _bytes.WriteByte(_currentByte);
                 ResetCurrentByte();
             }
         }

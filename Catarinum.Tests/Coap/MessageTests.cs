@@ -54,13 +54,13 @@ namespace Catarinum.Tests.Coap {
 
         [Test]
         public void Should_add_token() {
-            _message.AddToken(Converter.GetBytes(0x71));
+            _message.AddToken(ByteConverter.GetBytes(0x71));
             Assert.AreEqual(1, _message.OptionCount);
         }
 
         [Test]
         public void Should_get_token() {
-            var token = Converter.GetBytes(0x71);
+            var token = ByteConverter.GetBytes(0x71);
             _message.AddToken(token);
             Assert.AreEqual(token, _message.Token);
         }
@@ -72,17 +72,11 @@ namespace Catarinum.Tests.Coap {
 
         [Test]
         public void Should_get_first_option() {
-            var token1 = Converter.GetBytes(0x71);
-            var token2 = Converter.GetBytes(0x72);
+            var token1 = ByteConverter.GetBytes(0x71);
+            var token2 = ByteConverter.GetBytes(0x72);
             _message.AddToken(token1);
             _message.AddToken(token2);
             Assert.AreEqual(token1, _message.GetFirstOption(OptionNumber.Token).Value);
-        }
-
-        [Test]
-        public void Should_get_bytes() {
-            var bytes = _message.GetBytes();
-            Assert.AreEqual(4, bytes.Length);
         }
     }
 }

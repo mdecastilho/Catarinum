@@ -18,7 +18,7 @@ namespace Catarinum.Coap.Helpers {
             }
 
             var paths = uri.AbsolutePath.Split('/').Skip(1);
-            return paths.Select(p => new Option(OptionNumber.UriPath, Converter.GetBytes(p)));
+            return paths.Select(p => new Option(OptionNumber.UriPath, ByteConverter.GetBytes(p)));
         }
 
         public IEnumerable<Option> GetUriQuery(Uri uri) {
@@ -27,7 +27,7 @@ namespace Catarinum.Coap.Helpers {
             }
 
             var paths = uri.Query.Split('&');
-            return paths.Select(p => new Option(OptionNumber.UriQuery, Converter.GetBytes(p)));
+            return paths.Select(p => new Option(OptionNumber.UriQuery, ByteConverter.GetBytes(p)));
         }
     }
 }

@@ -1,5 +1,5 @@
 namespace Catarinum.Coap {
-    public interface ISocket {
+    public interface ITransportLayer {
         void Send(Message message);
     }
 }

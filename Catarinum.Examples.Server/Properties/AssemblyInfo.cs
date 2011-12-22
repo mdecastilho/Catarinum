@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Catarinum.Examples")]
+[assembly: AssemblyTitle("Catarinum.Examples.Server")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Catarinum.Examples")]
+[assembly: AssemblyProduct("Catarinum.Examples.Server")]
 [assembly: AssemblyCopyright("Copyright ©  2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("59018895-150f-4d3f-8fbb-da6b3de8fc58")]
+[assembly: Guid("3401c947-d1ed-4a91-9504-55a53af7acf2")]
 
 // Version information for an assembly consists of the following four values:
 //

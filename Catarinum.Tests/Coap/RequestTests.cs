@@ -32,11 +32,19 @@ namespace Catarinum.Tests.Coap {
         }
 
         [Test]
-        public void Should_get_uri() {
+        public void Should_extract_remote_address_from_uri() {
             var request = new Request(1, CodeRegistry.Get, true);
-            var uri = new Uri("coap://server/temperature");
+            var uri = new Uri("coap://127.0.0.1/temperature");
             request.AddUri(uri);
-            Assert.AreEqual(uri, request.Uri);
+            Assert.AreEqual("127.0.0.1:5683", request.RemoteAddress);
+        }
+
+        [Test]
+        public void Should_extract_remote_address_from_uri_with_port() {
+            var request = new Request(1, CodeRegistry.Get, true);
+            var uri = new Uri("coap://127.0.0.1:8080/temperature");
+            request.AddUri(uri);
+            Assert.AreEqual("127.0.0.1:8080", request.RemoteAddress);
         }
     }
 }
