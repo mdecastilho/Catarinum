@@ -53,15 +53,39 @@ namespace Catarinum.Tests.Coap {
         }
 
         [Test]
-        public void Should_add_token() {
-            _message.AddToken(ByteConverter.GetBytes(0x71));
+        public void Should_set_uri() {
+            _message.Uri = new Uri("coap://server/temperature");
+            Assert.AreEqual(1, _message.OptionCount);
+        }
+
+        [Test]
+        public void Should_get_remote_address() {
+            _message.Uri = new Uri("coap://server/temperature");
+            Assert.AreEqual("server", _message.RemoteAddress);
+        }
+
+        [Test]
+        public void Should_get_default_port() {
+            _message.Uri = new Uri("coap://server/temperature");
+            Assert.AreEqual(5683, _message.Port);
+        }
+
+        [Test]
+        public void Should_get_port() {
+            _message.Uri = new Uri("coap://server:8080/temperature");
+            Assert.AreEqual(8080, _message.Port);
+        }
+
+        [Test]
+        public void Should_set_token() {
+            _message.Token = ByteConverter.GetBytes(0x71);
             Assert.AreEqual(1, _message.OptionCount);
         }
 
         [Test]
         public void Should_get_token() {
             var token = ByteConverter.GetBytes(0x71);
-            _message.AddToken(token);
+            _message.Token = token;
             Assert.AreEqual(token, _message.Token);
         }
 
@@ -74,8 +98,8 @@ namespace Catarinum.Tests.Coap {
         public void Should_get_first_option() {
             var token1 = ByteConverter.GetBytes(0x71);
             var token2 = ByteConverter.GetBytes(0x72);
-            _message.AddToken(token1);
-            _message.AddToken(token2);
+            _message.AddOption(new Option(OptionNumber.Token, token1));
+            _message.AddOption(new Option(OptionNumber.Token, token2));
             Assert.AreEqual(token1, _message.GetFirstOption(OptionNumber.Token).Value);
         }
     }

@@ -4,29 +4,35 @@ using System.Linq;
 
 namespace Catarinum.Coap.Helpers {
     public class CoapUriParser {
-        public string GetDestinationAddress(Uri uri) {
-            return uri.Host;
+        private readonly Uri _uri;
+
+        public CoapUriParser(Uri uri) {
+            _uri = uri;
         }
 
-        public int GetDestinationPort(Uri uri) {
-            return uri.Port > 0 ? uri.Port : 5683;
+        public string GetRemoteAddress() {
+            return _uri.Host;
         }
 
-        public IEnumerable<Option> GetUriPath(Uri uri) {
-            if (uri.AbsolutePath.Equals("/")) {
+        public int GetPort() {
+            return _uri.IsDefaultPort ? 5683 : _uri.Port;
+        }
+
+        public IEnumerable<Option> GetUriPath() {
+            if (_uri.AbsolutePath.Equals("/")) {
                 return new List<Option>();
             }
 
-            var paths = uri.AbsolutePath.Split('/').Skip(1);
+            var paths = _uri.AbsolutePath.Split('/').Skip(1);
             return paths.Select(p => new Option(OptionNumber.UriPath, ByteConverter.GetBytes(p)));
         }
 
-        public IEnumerable<Option> GetUriQuery(Uri uri) {
-            if (uri.Query.Equals(string.Empty)) {
+        public IEnumerable<Option> GetUriQuery() {
+            if (_uri.Query.Equals(string.Empty)) {
                 return new List<Option>();
             }
 
-            var paths = uri.Query.Split('&');
+            var paths = _uri.Query.Split('&');
             return paths.Select(p => new Option(OptionNumber.UriQuery, ByteConverter.GetBytes(p)));
         }
     }

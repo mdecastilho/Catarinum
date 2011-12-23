@@ -63,7 +63,7 @@ namespace Catarinum.Tests.Coap {
         public void Separate_response_token_should_match_request_token() {
             var request = Examples.Basic_get_request_causing_a_separate_response();
             _handler.HandleRequest(request);
-            _transportLayerMock.Verify(l => l.Send(It.Is<Response>(m => m.Token.Equals(request.Token))));
+            _transportLayerMock.Verify(l => l.Send(It.Is<Response>(r => r.Token.Equals(request.Token))));
         }
 
         [Test]
@@ -79,6 +79,13 @@ namespace Catarinum.Tests.Coap {
             _handler.HandleRequest(request);
             _handler.HandleRequest(request);
             _resourceMock.Verify(r => r.Get(It.IsAny<byte[]>()), Times.Once());
+        }
+
+        [Test]
+        public void Response_source_should_have_request_destination() {
+            var request = Examples.Basic_get_request_causing_a_piggy_backed_response();
+            _handler.HandleRequest(request);
+            _transportLayerMock.Verify(l => l.Send(It.Is<Response>(r => r.RemoteAddress.Equals(request.RemoteAddress))));
         }
     }
 }

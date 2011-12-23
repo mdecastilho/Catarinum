@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Catarinum.Coap.Helpers;
 
 namespace Catarinum.Coap {
     public class Message {
@@ -13,16 +14,46 @@ namespace Catarinum.Coap {
         public const int OptionDeltaBits = 4;
         public const int OptionLengthBits = 4;
         private readonly List<Option> _options;
+        private Uri _uri;
         public int Id { get; private set; }
         public MessageType Type { get; private set; }
         public CodeRegistry Code { get; private set; }
         public byte[] Payload { get; set; }
         public string RemoteAddress { get; set; }
+        public int Port { get; set; }
+
+        public Uri Uri {
+            get { return _uri; }
+            set {
+                _uri = value;
+                var parser = new CoapUriParser(_uri);
+                RemoteAddress = parser.GetRemoteAddress();
+                Port = parser.GetPort();
+                _options.AddRange(parser.GetUriPath());
+                _options.AddRange(parser.GetUriQuery());
+            }
+        }
+
+        public string UriPath {
+            get {
+                var uriPath = "";
+                var options = _options.Where(o => o.Number == (int) OptionNumber.UriPath);
+
+                foreach (var option in options) {
+                    uriPath += string.Format("/{0}", ByteConverter.GetString(option.Value));
+                }
+
+                return uriPath;
+            }
+        }
 
         public byte[] Token {
             get {
                 var token = GetFirstOption(OptionNumber.Token);
                 return token != null ? token.Value : new byte[0];
+            }
+            set {
+                AddOption(new Option(OptionNumber.Token, value));
             }
         }
 
@@ -78,16 +109,8 @@ namespace Catarinum.Coap {
             _options.Add(option);
         }
 
-        public void AddToken(byte[] token) {
-            AddOption(new Option(OptionNumber.Token, token));
-        }
-
         public Option GetFirstOption(OptionNumber number) {
             return _options.FirstOrDefault(o => o.Number == (int) number);
-        }
-
-        protected void AddOptions(IEnumerable<Option> options) {
-            _options.AddRange(options);
         }
     }
 }

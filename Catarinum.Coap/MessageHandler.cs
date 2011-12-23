@@ -47,16 +47,23 @@ namespace Catarinum.Coap {
         private void Respond(Request request, byte[] uri, bool isPiggyBacked = false) {
             var id = isPiggyBacked ? request.Id : 1;
             var type = isPiggyBacked ? MessageType.Acknowledgement : request.Type;
-            var response = new Response(id, type, CodeRegistry.Content);
+            var code = CodeRegistry.Content;
+            var payload = new byte[0];
 
             try {
-                response.Payload = _resource.Get(uri);
+                payload = _resource.Get(uri);
             }
             catch (ResponseError error) {
-                response = new Response(id, type, error.Code);
+                code = error.Code;
             }
 
-            response.AddToken(request.Token);
+            var response = new Response(id, type, code) {
+                RemoteAddress = request.RemoteAddress,
+                Port = request.Port,
+                Token = request.Token,
+                Payload = payload
+            };
+
             _transportLayer.Send(response);
         }
     }
