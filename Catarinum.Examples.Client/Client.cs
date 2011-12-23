@@ -1,7 +1,7 @@
 ﻿using System;
 using Catarinum.Coap;
-using Catarinum.Coap.Helpers;
 using Catarinum.Examples.Server;
+using Catarinum.Util;
 
 namespace Catarinum.Examples.Client {
     public class Client {

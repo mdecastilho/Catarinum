@@ -55,6 +55,10 @@
       <Project>{CB18A362-7769-46F4-A3AC-59F60956E6D3}</Project>
       <Name>Catarinum.Coap</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Catarinum.Util\Catarinum.Util.csproj">
+      <Project>{749C3A1F-D46B-4226-BA33-3E40DEB60E40}</Project>
+      <Name>Catarinum.Util</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

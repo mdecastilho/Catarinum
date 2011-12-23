@@ -1,5 +1,5 @@
 ﻿using Catarinum.Coap;
-using Catarinum.Coap.Helpers;
+using Catarinum.Util;
 
 namespace Catarinum.Examples.Server {
     public class TemperatureResource : IResource {

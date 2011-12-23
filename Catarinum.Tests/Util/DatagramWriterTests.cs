@@ -1,7 +1,7 @@
-using Catarinum.Coap.Helpers;
+using Catarinum.Util;
 using NUnit.Framework;
 
-namespace Catarinum.Tests.Coap.Helpers {
+namespace Catarinum.Tests.Util {
     [TestFixture]
     public class DatagramWriterTests {
         private DatagramWriter _writer;

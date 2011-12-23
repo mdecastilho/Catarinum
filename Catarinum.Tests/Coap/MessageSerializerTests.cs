@@ -1,8 +1,8 @@
 using Catarinum.Coap;
-using Catarinum.Coap.Helpers;
+using Catarinum.Util;
 using NUnit.Framework;
 
-namespace Catarinum.Tests.Coap.Helpers {
+namespace Catarinum.Tests.Coap {
     [TestFixture]
     public class MessageSerializerTests {
         [Test]

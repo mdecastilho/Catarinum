@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Catarinum.Util;
 
-namespace Catarinum.Coap.Helpers {
-    public class CoapUriParser {
+namespace Catarinum.Coap {
+    public class UriParser {
         private readonly Uri _uri;
 
-        public CoapUriParser(Uri uri) {
+        public UriParser(Uri uri) {
             _uri = uri;
         }
 

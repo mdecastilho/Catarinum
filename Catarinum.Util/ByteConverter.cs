@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Catarinum.Coap.Helpers {
+namespace Catarinum.Util {
     public class ByteConverter {
         private static readonly Encoding Encoding = Encoding.UTF8;
 

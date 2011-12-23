@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Sockets;
 using Catarinum.Coap;
-using Catarinum.Coap.Helpers;
 
 namespace Catarinum.Examples.Server {
     public class TransportLayer : ITransportLayer {

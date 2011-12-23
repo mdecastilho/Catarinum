@@ -1,6 +1,6 @@
 ﻿using System;
 using Catarinum.Coap;
-using Catarinum.Coap.Helpers;
+using Catarinum.Util;
 using NUnit.Framework;
 
 namespace Catarinum.Tests.Coap {
@@ -74,6 +74,12 @@ namespace Catarinum.Tests.Coap {
         public void Should_get_port() {
             _message.Uri = new Uri("coap://server:8080/temperature");
             Assert.AreEqual(8080, _message.Port);
+        }
+
+        [Test]
+        public void Should_get_uri_path() {
+            _message.Uri = new Uri("coap://server:8080/temperature");
+            Assert.AreEqual("/temperature", _message.UriPath);
         }
 
         [Test]

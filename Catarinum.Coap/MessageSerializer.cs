@@ -1,4 +1,6 @@
-namespace Catarinum.Coap.Helpers {
+using Catarinum.Util;
+
+namespace Catarinum.Coap {
     public class MessageSerializer {
         public static byte[] Serialize(Message message) {
             var writer = new DatagramWriter();

@@ -1,6 +1,6 @@
 ﻿using System;
 using Catarinum.Coap;
-using Catarinum.Coap.Helpers;
+using Catarinum.Util;
 using Moq;
 
 namespace Catarinum.Tests.Coap {

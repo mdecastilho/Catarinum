@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Catarinum.Coap.Helpers;
+using Catarinum.Util;
 
 namespace Catarinum.Coap {
     public class Message {
@@ -26,7 +26,7 @@ namespace Catarinum.Coap {
             get { return _uri; }
             set {
                 _uri = value;
-                var parser = new CoapUriParser(_uri);
+                var parser = new UriParser(_uri);
                 RemoteAddress = parser.GetRemoteAddress();
                 Port = parser.GetPort();
                 _options.AddRange(parser.GetUriPath());
