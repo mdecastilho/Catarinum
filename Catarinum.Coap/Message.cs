@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Catarinum.Util;
+using Catarinum.Coap.Util;
 
 namespace Catarinum.Coap {
     public class Message {

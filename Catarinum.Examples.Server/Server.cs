@@ -1,25 +1,17 @@
-﻿using System;
-using System.Net;
-using Catarinum.Coap;
+﻿using Catarinum.Coap;
 
 namespace Catarinum.Examples.Server {
     public class Server {
-        private readonly TransportLayer _transportLayer;
-        private readonly MessageHandler _handler;
+        private readonly MessageLayer _messageLayer;
 
         public Server() {
-            _transportLayer = new TransportLayer();
-            _handler = new MessageHandler(_transportLayer, new TemperatureResource());
+            _messageLayer = new MessageLayer(new TransportLayer());
+            _messageLayer.AddHandler(new PrintRequestHandler());
+            _messageLayer.AddHandler(new MessageHandler(_messageLayer, new TemperatureResource()));
         }
 
-        public void Start(IPEndPoint endPoint) {
-            _transportLayer.Listen(endPoint);
-            _transportLayer.Receive(OnReceive);
-        }
-
-        private void OnReceive(Message message) {
-            Console.WriteLine(string.Format("message received: {0}", message.UriPath));
-            _handler.HandleRequest((Request) message);
+        public void Start(string ipAddress, int port) {
+            _messageLayer.Listen(ipAddress, port);
         }
     }
 }

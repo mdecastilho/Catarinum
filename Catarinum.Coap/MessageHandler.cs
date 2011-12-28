@@ -1,15 +1,19 @@
 ﻿using System.Collections.Generic;
 
 namespace Catarinum.Coap {
-    public class MessageHandler {
-        private readonly ITransportLayer _transportLayer;
+    public class MessageHandler : IMessageHandler {
+        private readonly IMessageLayer _messageLayer;
         private readonly IResource _resource;
         private readonly List<int> _messages;
 
-        public MessageHandler(ITransportLayer transportLayer, IResource resource) {
-            _transportLayer = transportLayer;
+        public MessageHandler(IMessageLayer messageLayer, IResource resource) {
+            _messageLayer = messageLayer;
             _resource = resource;
             _messages = new List<int>();
+        }
+
+        public void Handle(Message message) {
+            HandleRequest((Request) message);
         }
 
         public void HandleRequest(Request request) {
@@ -41,7 +45,7 @@ namespace Catarinum.Coap {
 
         private void Accept(Request request) {
             var ack = new Message(request.Id, MessageType.Acknowledgement);
-            _transportLayer.Send(ack);
+            _messageLayer.Send(ack);
         }
 
         private void Respond(Request request, byte[] uri, bool isPiggyBacked = false) {
@@ -64,7 +68,7 @@ namespace Catarinum.Coap {
                 Payload = payload
             };
 
-            _transportLayer.Send(response);
+            _messageLayer.Send(response);
         }
     }
 }

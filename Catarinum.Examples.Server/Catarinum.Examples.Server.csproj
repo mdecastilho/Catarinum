@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PrintRequestHandler.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="TemperatureResource.cs" />
     <Compile Include="TransportLayer.cs" />
@@ -53,10 +54,6 @@
     <ProjectReference Include="..\Catarinum.Coap\Catarinum.Coap.csproj">
       <Project>{CB18A362-7769-46F4-A3AC-59F60956E6D3}</Project>
       <Name>Catarinum.Coap</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Catarinum.Util\Catarinum.Util.csproj">
-      <Project>{749C3A1F-D46B-4226-BA33-3E40DEB60E40}</Project>
-      <Name>Catarinum.Util</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

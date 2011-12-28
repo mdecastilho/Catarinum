@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Catarinum.Util {
+namespace Catarinum.Coap.Util {
     public class ByteConverter {
         private static readonly Encoding Encoding = Encoding.UTF8;
 
@@ -15,10 +15,6 @@ namespace Catarinum.Util {
 
         public static string GetString(byte[] bytes) {
             return Encoding.GetString(bytes);
-        }
-
-        public static string GetHexString(byte[] bytes) {
-            return BitConverter.ToString(bytes);
         }
     }
 }

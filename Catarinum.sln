@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catarinum.Examples.Client",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catarinum.Examples.Server", "Catarinum.Examples.Server\Catarinum.Examples.Server.csproj", "{2689AFD8-4118-491F-B0D9-11F2B8EEA260}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catarinum.Util", "Catarinum.Util\Catarinum.Util.csproj", "{749C3A1F-D46B-4226-BA33-3E40DEB60E40}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,16 +59,6 @@ Global
 		{2689AFD8-4118-491F-B0D9-11F2B8EEA260}.Release|Mixed Platforms.Build.0 = Release|x86
 		{2689AFD8-4118-491F-B0D9-11F2B8EEA260}.Release|x86.ActiveCfg = Release|x86
 		{2689AFD8-4118-491F-B0D9-11F2B8EEA260}.Release|x86.Build.0 = Release|x86
-		{749C3A1F-D46B-4226-BA33-3E40DEB60E40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{749C3A1F-D46B-4226-BA33-3E40DEB60E40}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{749C3A1F-D46B-4226-BA33-3E40DEB60E40}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{749C3A1F-D46B-4226-BA33-3E40DEB60E40}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{749C3A1F-D46B-4226-BA33-3E40DEB60E40}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{749C3A1F-D46B-4226-BA33-3E40DEB60E40}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{749C3A1F-D46B-4226-BA33-3E40DEB60E40}.Release|Any CPU.Build.0 = Release|Any CPU
-		{749C3A1F-D46B-4226-BA33-3E40DEB60E40}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{749C3A1F-D46B-4226-BA33-3E40DEB60E40}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{749C3A1F-D46B-4226-BA33-3E40DEB60E40}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -40,6 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IDatagramHandler.cs" />
+    <Compile Include="IMessageHandler.cs" />
+    <Compile Include="IMessageLayer.cs" />
+    <Compile Include="MessageLayer.cs" />
+    <Compile Include="MessageReceiver.cs" />
     <Compile Include="MessageSerializer.cs" />
     <Compile Include="IResource.cs" />
     <Compile Include="ITransportLayer.cs" />
@@ -56,16 +61,11 @@
     <Compile Include="CodeRegistry.cs" />
     <Compile Include="ResponseError.cs" />
     <Compile Include="UriParser.cs" />
+    <Compile Include="Util\ByteConverter.cs" />
+    <Compile Include="Util\DatagramReader.cs" />
+    <Compile Include="Util\DatagramWriter.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Catarinum.Util\Catarinum.Util.csproj">
-      <Project>{749C3A1F-D46B-4226-BA33-3E40DEB60E40}</Project>
-      <Name>Catarinum.Util</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

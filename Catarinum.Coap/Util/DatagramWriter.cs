@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Catarinum.Util {
+namespace Catarinum.Coap.Util {
     public class DatagramWriter {
         private const int ByteSize = 8;
         private MemoryStream _bytes;

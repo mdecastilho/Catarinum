@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace Catarinum.Util {
+namespace Catarinum.Coap.Util {
     public class DatagramReader {
         private const int ByteSize = 8;
         private readonly MemoryStream _bytes;

@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Catarinum.Util;
+using Catarinum.Coap.Util;
 using NUnit.Framework;
 using UriParser = Catarinum.Coap.UriParser;
 

@@ -1,4 +1,5 @@
-using Catarinum.Util;
+using System.Runtime.Serialization;
+using Catarinum.Coap.Util;
 
 namespace Catarinum.Coap {
     public class MessageSerializer {
@@ -14,9 +15,14 @@ namespace Catarinum.Coap {
             return writer.GetBytes();
         }
 
-        public static Message Unserialize(byte[] bytes) {
+        public static Message Deserialize(byte[] bytes) {
             var reader = new DatagramReader(bytes);
             var version = reader.Read(Message.VersionBits);
+
+            if (version != Message.Version) {
+                throw new SerializationException("incorrect version");
+            }
+
             var type = (MessageType) reader.Read(Message.TypeBits);
             var optionCount = reader.Read(Message.OptionCountBits);
             var code = (CodeRegistry) reader.Read(Message.CodeBits);

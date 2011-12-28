@@ -1,5 +1,6 @@
+using System.Runtime.Serialization;
 using Catarinum.Coap;
-using Catarinum.Util;
+using Catarinum.Coap.Util;
 using NUnit.Framework;
 
 namespace Catarinum.Tests.Coap {
@@ -46,13 +47,26 @@ namespace Catarinum.Tests.Coap {
         }
 
         [Test]
-        public void Should_unserialize() {
+        public void Should_deserialize() {
             var request = Examples.Basic_get_request_causing_a_piggy_backed_response_with_token();
             var bytes = MessageSerializer.Serialize(request);
-            var message = MessageSerializer.Unserialize(bytes);
+            var message = MessageSerializer.Deserialize(bytes);
             Assert.IsNotNull(message);
             Assert.IsInstanceOf<Request>(message);
             Assert.AreEqual(2, message.OptionCount);
+        }
+
+        [Test]
+        [ExpectedException(typeof(SerializationException))]
+        public void Should_throw_exception_when_version_is_incorrect() {
+            var writer = new DatagramWriter();
+            writer.Write(0, Message.VersionBits);
+            writer.Write((int) MessageType.Confirmable, Message.TypeBits);
+            writer.Write(0, Message.OptionCountBits);
+            writer.Write((int) CodeRegistry.Get, Message.CodeBits);
+            writer.Write(1, Message.IdBits);
+            var bytes = writer.GetBytes();
+            MessageSerializer.Deserialize(bytes);
         }
     }
 }
