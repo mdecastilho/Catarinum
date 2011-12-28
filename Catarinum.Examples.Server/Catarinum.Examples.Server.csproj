@@ -48,7 +48,6 @@
     <Compile Include="PrintRequestHandler.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="TemperatureResource.cs" />
-    <Compile Include="TransportLayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Catarinum.Coap\Catarinum.Coap.csproj">

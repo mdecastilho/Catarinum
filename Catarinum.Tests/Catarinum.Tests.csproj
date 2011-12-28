@@ -56,7 +56,7 @@
     <Compile Include="Coap\DatagramWriterTests.cs" />
     <Compile Include="Coap\MessageSerializerTests.cs" />
     <Compile Include="Coap\Util.cs" />
-    <Compile Include="Coap\MessageHandlerTests.cs" />
+    <Compile Include="Coap\RequestHandlerTests.cs" />
     <Compile Include="Coap\MessageTests.cs" />
     <Compile Include="Coap\OptionTests.cs" />
     <Compile Include="Coap\UriParserTests.cs" />

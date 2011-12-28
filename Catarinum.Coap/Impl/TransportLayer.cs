@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using Catarinum.Coap;
 
-namespace Catarinum.Examples.Server {
+namespace Catarinum.Coap.Impl {
     public class TransportLayer : ITransportLayer {
         private readonly List<IDatagramHandler> _handlers;
         private readonly Socket _socket;

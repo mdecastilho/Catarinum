@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace Catarinum.Coap {
-    public class MessageHandler : IMessageHandler {
+namespace Catarinum.Coap.Impl {
+    public class RequestHandler : IMessageHandler {
         private readonly IMessageLayer _messageLayer;
         private readonly IResource _resource;
         private readonly List<int> _messages;
 
-        public MessageHandler(IMessageLayer messageLayer, IResource resource) {
+        public RequestHandler(IMessageLayer messageLayer, IResource resource) {
             _messageLayer = messageLayer;
             _resource = resource;
             _messages = new List<int>();
@@ -16,7 +16,7 @@ namespace Catarinum.Coap {
             HandleRequest((Request) message);
         }
 
-        public void HandleRequest(Request request) {
+        private void HandleRequest(Request request) {
             var uri = request.GetFirstOption(OptionNumber.UriPath).Value;
 
             if (!IsDuplicated(request)) {

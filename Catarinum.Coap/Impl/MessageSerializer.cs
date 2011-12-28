@@ -1,9 +1,9 @@
 using System.Runtime.Serialization;
 using Catarinum.Coap.Util;
 
-namespace Catarinum.Coap {
-    public class MessageSerializer {
-        public static byte[] Serialize(Message message) {
+namespace Catarinum.Coap.Impl {
+    public class MessageSerializer : IMessageSerializer {
+        public byte[] Serialize(Message message) {
             var writer = new DatagramWriter();
             writer.Write(Message.Version, Message.VersionBits);
             writer.Write((int) message.Type, Message.TypeBits);
@@ -15,7 +15,7 @@ namespace Catarinum.Coap {
             return writer.GetBytes();
         }
 
-        public static Message Deserialize(byte[] bytes) {
+        public Message Deserialize(byte[] bytes) {
             var reader = new DatagramReader(bytes);
             var version = reader.Read(Message.VersionBits);
 

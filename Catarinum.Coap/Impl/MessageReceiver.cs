@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
 
-namespace Catarinum.Coap {
+namespace Catarinum.Coap.Impl {
     public class MessageReceiver : IDatagramHandler {
+        private readonly IMessageSerializer _messageSerializer;
         private readonly List<IMessageHandler> _handlers;
 
-        public MessageReceiver() {
+        public MessageReceiver(IMessageSerializer messageSerializer) {
+            _messageSerializer = messageSerializer;
             _handlers = new List<IMessageHandler>();
         }
 
         public void Handle(string ipAddress, int port, byte[] bytes) {
             try {
-                var message = MessageSerializer.Deserialize(bytes);
+                var message = _messageSerializer.Deserialize(bytes);
                 message.RemoteAddress = ipAddress;
                 message.Port = port;
 
