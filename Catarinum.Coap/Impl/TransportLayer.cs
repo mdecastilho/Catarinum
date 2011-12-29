@@ -1,16 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 
 namespace Catarinum.Coap.Impl {
-    public class TransportLayer : ITransportLayer {
-        private readonly List<IDatagramHandler> _handlers;
+    public class TransportLayer : Layer {
+        private readonly IMessageSerializer _messageSerializer;
         private readonly Socket _socket;
         private readonly byte[] _buffer;
+        private bool _isListening;
 
-        public TransportLayer() {
-            _handlers = new List<IDatagramHandler>();
+        public TransportLayer()
+            : this(new MessageSerializer()) {
+        }
+
+        public TransportLayer(IMessageSerializer messageSerializer) {
+            _messageSerializer = messageSerializer;
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             _buffer = new byte[1024];
         }
@@ -18,28 +22,28 @@ namespace Catarinum.Coap.Impl {
         public void Listen(string ipAddress, int port) {
             var endPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
             _socket.Bind(endPoint);
-            BeginReceive();
+            _isListening = true;
+            BeginReceive(new IPEndPoint(IPAddress.Any, 0));
         }
 
-        public void Send(string ipAddress, int port, byte[] bytes) {
-            var endPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
+        public override void Send(Message message) {
+            var endPoint = new IPEndPoint(IPAddress.Parse(message.RemoteAddress), message.Port);
 
             try {
+                var bytes = _messageSerializer.Serialize(message);
                 _socket.BeginSendTo(bytes, 0, bytes.Length, SocketFlags.None, endPoint, OnSend, null);
-                BeginReceive();
+
+                if (!_isListening) {
+                    BeginReceive(endPoint);
+                }
             }
             catch (Exception e) {
                 Console.WriteLine(string.Format("send message error: {0}", e.Message));
             }
         }
 
-        public void AddHandler(IDatagramHandler handler) {
-            _handlers.Add(handler);
-        }
-
-        private void BeginReceive() {
+        private void BeginReceive(EndPoint sender) {
             try {
-                var sender = (EndPoint) new IPEndPoint(IPAddress.Any, 0);
                 _socket.BeginReceiveFrom(_buffer, 0, _buffer.Length, SocketFlags.None, ref sender, OnReceive, null);
             }
             catch (Exception e) {
@@ -59,15 +63,18 @@ namespace Catarinum.Coap.Impl {
         private void OnReceive(IAsyncResult ar) {
             try {
                 EndPoint sender = new IPEndPoint(IPAddress.Any, 0);
-                _socket.EndReceiveFrom(ar, ref sender);
-                var ipAddress = ((IPEndPoint) sender).Address.ToString();
-                var port = ((IPEndPoint) sender).Port;
+                var bytesRead = _socket.EndReceiveFrom(ar, ref sender);
 
-                foreach (var handler in _handlers) {
-                    handler.Handle(ipAddress, port, _buffer);
+                if (bytesRead > 0) {
+                    var bytes = new byte[bytesRead];
+                    Buffer.BlockCopy(_buffer, 0, bytes, 0, bytesRead);
+                    var message = _messageSerializer.Deserialize(bytes);
+                    message.RemoteAddress = ((IPEndPoint) sender).Address.ToString();
+                    message.Port = ((IPEndPoint) sender).Port;
+                    Handle(message);
+
+                    _socket.BeginReceiveFrom(_buffer, 0, _buffer.Length, SocketFlags.None, ref sender, OnReceive, null);
                 }
-
-                _socket.BeginReceiveFrom(_buffer, 0, _buffer.Length, SocketFlags.None, ref sender, OnReceive, null);
             }
             catch (Exception e) {
                 Console.WriteLine(string.Format("receive message error: {0}", e.Message));

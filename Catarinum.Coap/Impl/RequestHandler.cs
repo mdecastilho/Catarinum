@@ -1,15 +1,11 @@
-﻿using System.Collections.Generic;
-
-namespace Catarinum.Coap.Impl {
-    public class RequestHandler : IMessageHandler {
-        private readonly IMessageLayer _messageLayer;
+﻿namespace Catarinum.Coap.Impl {
+    public class RequestHandler : IHandler {
+        private readonly ILayer _messageLayer;
         private readonly IResource _resource;
-        private readonly List<int> _messages;
 
-        public RequestHandler(IMessageLayer messageLayer, IResource resource) {
+        public RequestHandler(ILayer messageLayer, IResource resource) {
             _messageLayer = messageLayer;
             _resource = resource;
-            _messages = new List<int>();
         }
 
         public void Handle(Message message) {
@@ -19,24 +15,16 @@ namespace Catarinum.Coap.Impl {
         private void HandleRequest(Request request) {
             var uri = request.GetFirstOption(OptionNumber.UriPath).Value;
 
-            if (!IsDuplicated(request)) {
-                if (CanBePiggyBacked(uri)) {
-                    Respond(request, uri, true);
-                }
-                else {
-                    if (request.IsConfirmable) {
-                        Accept(request);
-                    }
-
-                    Respond(request, uri);
-                }
-
-                _messages.Add(request.Id);
+            if (CanBePiggyBacked(uri)) {
+                Respond(request, uri, true);
             }
-        }
+            else {
+                if (request.IsConfirmable) {
+                    Accept(request);
+                }
 
-        private bool IsDuplicated(Request request) {
-            return _messages.Contains(request.Id);
+                Respond(request, uri);
+            }
         }
 
         private bool CanBePiggyBacked(byte[] uri) {
