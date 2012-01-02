@@ -35,7 +35,7 @@ namespace Catarinum.Coap.Util {
 
         public byte[] ReadBytes(int count) {
             if (count < 0) {
-                count = _bytes.Capacity;
+                count = (int) (_bytes.Length - _bytes.Position);
             }
 
             var buffer = new byte[count];

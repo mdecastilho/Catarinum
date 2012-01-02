@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coap\DatagramReaderTests.cs" />
     <Compile Include="Coap\Examples.cs" />
     <Compile Include="Coap\DatagramWriterTests.cs" />
     <Compile Include="Coap\MessageSerializerTests.cs" />
