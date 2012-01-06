@@ -1,4 +1,4 @@
-﻿namespace Catarinum.Coap.Impl {
+﻿namespace Catarinum.Coap {
     public class ResourceHandler : IHandler {
         private readonly ILayer _messageLayer;
         private readonly IResource _resource;

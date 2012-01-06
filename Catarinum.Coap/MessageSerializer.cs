@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Catarinum.Coap.Util;
 
-namespace Catarinum.Coap.Impl {
+namespace Catarinum.Coap {
     public class MessageSerializer {
         public virtual byte[] Serialize(Message message) {
             var writer = new DatagramWriter();
@@ -18,6 +18,7 @@ namespace Catarinum.Coap.Impl {
 
         public virtual Message Deserialize(byte[] bytes) {
             var reader = new DatagramReader(bytes);
+            var factory = new MessageFactory();
             var version = reader.Read(Message.VersionBits);
 
             if (version != Message.Version) {
@@ -28,8 +29,7 @@ namespace Catarinum.Coap.Impl {
             var optionCount = reader.Read(Message.OptionCountBits);
             var code = (CodeRegistry) reader.Read(Message.CodeBits);
             var id = reader.Read(Message.IdBits);
-            var message = CreateMessage(type, code);
-            message.Id = id;
+            var message = factory.Create(type, code, id);
             var currentOption = 0;
 
             for (var i = 0; i < optionCount; i++) {
@@ -44,7 +44,7 @@ namespace Catarinum.Coap.Impl {
             return message;
         }
 
-        protected static byte[] GetOptions(IEnumerable<Option> options) {
+        private static byte[] GetOptions(IEnumerable<Option> options) {
             var writer = new DatagramWriter();
             var lastOptionNumber = 0;
 
@@ -58,16 +58,6 @@ namespace Catarinum.Coap.Impl {
             }
 
             return writer.GetBytes();
-        }
-
-        protected static Message CreateMessage(MessageType type, CodeRegistry code) {
-            if (Request.IsValidCodeRegistry(code)) {
-                return new Request(code, type == MessageType.Confirmable);
-            }
-
-            return Response.IsValidCodeRegistry(code)
-                ? new Response(type, code)
-                : new Message(type);
         }
     }
 }

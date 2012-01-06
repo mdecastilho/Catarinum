@@ -1,6 +1,5 @@
 using System.Runtime.Serialization;
 using Catarinum.Coap;
-using Catarinum.Coap.Impl;
 using Catarinum.Coap.Util;
 using NUnit.Framework;
 

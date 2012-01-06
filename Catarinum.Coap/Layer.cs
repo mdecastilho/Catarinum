@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Catarinum.Coap.Impl {
+namespace Catarinum.Coap {
     public abstract class Layer : ILayer, IHandler {
         private readonly List<IHandler> _handlers;
 

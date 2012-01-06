@@ -1,6 +1,5 @@
 using System.Linq;
 using Catarinum.Coap;
-using Catarinum.Coap.Impl;
 using Moq;
 using NUnit.Framework;
 

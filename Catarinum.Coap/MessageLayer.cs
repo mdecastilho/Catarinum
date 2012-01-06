@@ -1,12 +1,16 @@
 ﻿using System.Collections.Generic;
 
-namespace Catarinum.Coap.Impl {
+namespace Catarinum.Coap {
     public class MessageLayer : UpperLayer {
         private readonly ITransactionFactory _transactionFactory;
         private readonly Dictionary<int, ITransaction> _transactions;
         private readonly IdSequence _idSequence;
         private readonly MessageCache _replyCache;
         private readonly MessageCache _duplicationCache;
+
+        public MessageLayer()
+            : this(new TransportLayer()) {
+        }
 
         public MessageLayer(ILayer lowerLayer)
             : this(lowerLayer, new TransactionFactory()) {

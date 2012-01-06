@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Catarinum.Coap.Impl {
+namespace Catarinum.Coap {
     public class Transaction : ITransaction {
         public const int ResponseTimeout = 2000;
         public const double ResponseRandomFactor = 1.5;

@@ -1,6 +1,5 @@
 ﻿using System;
 using Catarinum.Coap;
-using Catarinum.Coap.Impl;
 using Catarinum.Coap.Util;
 
 namespace Catarinum.Examples.Client {
@@ -8,7 +7,7 @@ namespace Catarinum.Examples.Client {
         private readonly MessageLayer _messageLayer;
 
         public Client() {
-            _messageLayer = new MessageLayer(new TransportLayer());
+            _messageLayer = new MessageLayer();
             _messageLayer.AddHandler(new ConsoleHandler());
         }
 

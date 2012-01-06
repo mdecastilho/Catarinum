@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace Catarinum.Coap.Impl {
+namespace Catarinum.Coap {
     public class RetransmissionTimer : ITimer {
         private Timer _timer;
         private Action<ITransaction> _callback;

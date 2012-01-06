@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace Catarinum.Coap.Impl {
+namespace Catarinum.Coap {
     public class TransportLayer : Layer {
         private readonly MessageSerializer _messageSerializer;
         private readonly Socket _socket;

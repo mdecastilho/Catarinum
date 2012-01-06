@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using Catarinum.Coap;
-using Catarinum.Coap.Impl;
 using Catarinum.Coap.Util;
 
 namespace Catarinum.Examples.Server {
