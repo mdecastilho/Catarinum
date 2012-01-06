@@ -4,6 +4,7 @@ namespace Catarinum.Coap.Impl {
     public class MessageLayer : UpperLayer {
         private readonly ITransactionFactory _transactionFactory;
         private readonly Dictionary<int, ITransaction> _transactions;
+        private readonly IdSequence _idSequence;
         private readonly MessageCache _replyCache;
         private readonly MessageCache _duplicationCache;
 
@@ -15,6 +16,7 @@ namespace Catarinum.Coap.Impl {
             : base(lowerLayer) {
             _transactionFactory = transactionFactory;
             _transactions = new Dictionary<int, ITransaction>();
+            _idSequence = new IdSequence();
             _replyCache = new MessageCache();
             _duplicationCache = new MessageCache();
         }
@@ -25,7 +27,7 @@ namespace Catarinum.Coap.Impl {
 
         public override void Send(Message message) {
             if (message.Id == 0) {
-                message.Id = IdGenerator.NextId();
+                message.Id = _idSequence.NextId();
             }
 
             if (message.IsConfirmable) {

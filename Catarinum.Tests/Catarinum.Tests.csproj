@@ -55,6 +55,7 @@
     <Compile Include="Coap\DatagramReaderTests.cs" />
     <Compile Include="Coap\Examples.cs" />
     <Compile Include="Coap\DatagramWriterTests.cs" />
+    <Compile Include="Coap\IdSequenceTests.cs" />
     <Compile Include="Coap\MessageLayerTests.cs" />
     <Compile Include="Coap\MessageSerializerTests.cs" />
     <Compile Include="Coap\TimerStub.cs" />

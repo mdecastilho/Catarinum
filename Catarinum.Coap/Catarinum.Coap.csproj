@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ILayer.cs" />
-    <Compile Include="IdGenerator.cs" />
+    <Compile Include="IdSequence.cs" />
     <Compile Include="Impl\MessageCache.cs" />
     <Compile Include="Impl\RetransmissionTimer.cs" />
     <Compile Include="ITimer.cs" />
