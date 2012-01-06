@@ -10,8 +10,8 @@ namespace Catarinum.Coap {
             get { return !IsPiggyBacked; }
         }
 
-        public Response(int id, MessageType type, CodeRegistry code)
-            : base(id, type, code) {
+        public Response(MessageType type, CodeRegistry code)
+            : base(type, code) {
 
             if (!IsValidCodeRegistry(code)) {
                 throw new ArgumentException("Invalid code registry for response.");

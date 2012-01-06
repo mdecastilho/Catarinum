@@ -1,21 +1,22 @@
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Catarinum.Coap.Util;
 
 namespace Catarinum.Coap.Impl {
-    public class MessageSerializer : IMessageSerializer {
-        public byte[] Serialize(Message message) {
+    public class MessageSerializer {
+        public virtual byte[] Serialize(Message message) {
             var writer = new DatagramWriter();
             writer.Write(Message.Version, Message.VersionBits);
             writer.Write((int) message.Type, Message.TypeBits);
             writer.Write(message.OptionCount, Message.OptionCountBits);
             writer.Write((int) message.Code, Message.CodeBits);
             writer.Write(message.Id, Message.IdBits);
-            writer.WriteBytes(GetOptions(message));
+            writer.WriteBytes(GetOptions(message.Options));
             writer.WriteBytes(message.Payload);
             return writer.GetBytes();
         }
 
-        public Message Deserialize(byte[] bytes) {
+        public virtual Message Deserialize(byte[] bytes) {
             var reader = new DatagramReader(bytes);
             var version = reader.Read(Message.VersionBits);
 
@@ -27,7 +28,8 @@ namespace Catarinum.Coap.Impl {
             var optionCount = reader.Read(Message.OptionCountBits);
             var code = (CodeRegistry) reader.Read(Message.CodeBits);
             var id = reader.Read(Message.IdBits);
-            var message = CreateMessage(code, id, type);
+            var message = CreateMessage(type, code);
+            message.Id = id;
             var currentOption = 0;
 
             for (var i = 0; i < optionCount; i++) {
@@ -42,11 +44,11 @@ namespace Catarinum.Coap.Impl {
             return message;
         }
 
-        private static byte[] GetOptions(Message message) {
+        protected static byte[] GetOptions(IEnumerable<Option> options) {
             var writer = new DatagramWriter();
             var lastOptionNumber = 0;
 
-            foreach (var option in message.Options) {
+            foreach (var option in options) {
                 var delta = option.Number - lastOptionNumber;
                 var lenght = option.Value.Length;
                 writer.Write(delta, Message.OptionDeltaBits);
@@ -58,14 +60,14 @@ namespace Catarinum.Coap.Impl {
             return writer.GetBytes();
         }
 
-        private static Message CreateMessage(CodeRegistry code, int id, MessageType type) {
+        protected static Message CreateMessage(MessageType type, CodeRegistry code) {
             if (Request.IsValidCodeRegistry(code)) {
-                return new Request(id, code, type == MessageType.Confirmable);
+                return new Request(code, type == MessageType.Confirmable);
             }
 
             return Response.IsValidCodeRegistry(code)
-                ? new Response(id, type, code)
-                : new Message(id, type);
+                ? new Response(type, code)
+                : new Message(type);
         }
     }
 }

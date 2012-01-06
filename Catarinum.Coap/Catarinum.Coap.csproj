@@ -41,8 +41,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ILayer.cs" />
-    <Compile Include="IMessageSerializer.cs" />
+    <Compile Include="IdGenerator.cs" />
+    <Compile Include="Impl\RetransmissionTimer.cs" />
+    <Compile Include="ITimer.cs" />
+    <Compile Include="Impl\TransactionFactory.cs" />
+    <Compile Include="ITransaction.cs" />
+    <Compile Include="ITransactionFactory.cs" />
     <Compile Include="Impl\Layer.cs" />
+    <Compile Include="Impl\Transaction.cs" />
     <Compile Include="Impl\TransportLayer.cs" />
     <Compile Include="Impl\MessageLayer.cs" />
     <Compile Include="Impl\MessageSerializer.cs" />
@@ -51,7 +57,7 @@
     <Compile Include="IHandler.cs" />
     <Compile Include="MediaTypeRegistry.cs" />
     <Compile Include="Message.cs" />
-    <Compile Include="Impl\RequestHandler.cs" />
+    <Compile Include="Impl\ResourceHandler.cs" />
     <Compile Include="MessageType.cs" />
     <Compile Include="Option.cs" />
     <Compile Include="OptionFormat.cs" />

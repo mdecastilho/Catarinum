@@ -55,9 +55,12 @@
     <Compile Include="Coap\DatagramReaderTests.cs" />
     <Compile Include="Coap\Examples.cs" />
     <Compile Include="Coap\DatagramWriterTests.cs" />
+    <Compile Include="Coap\MessageLayerTests.cs" />
     <Compile Include="Coap\MessageSerializerTests.cs" />
+    <Compile Include="Coap\TimerStub.cs" />
+    <Compile Include="Coap\TransactionTests.cs" />
     <Compile Include="Coap\Util.cs" />
-    <Compile Include="Coap\RequestHandlerTests.cs" />
+    <Compile Include="Coap\ResourceHandlerTests.cs" />
     <Compile Include="Coap\MessageTests.cs" />
     <Compile Include="Coap\OptionTests.cs" />
     <Compile Include="Coap\UriParserTests.cs" />

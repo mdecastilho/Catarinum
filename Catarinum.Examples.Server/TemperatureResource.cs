@@ -1,4 +1,7 @@
-﻿using Catarinum.Coap;
+﻿using System;
+using System.Threading;
+using Catarinum.Coap;
+using Catarinum.Coap.Impl;
 using Catarinum.Coap.Util;
 
 namespace Catarinum.Examples.Server {
@@ -8,6 +11,9 @@ namespace Catarinum.Examples.Server {
         }
 
         public byte[] Get(byte[] uriPath) {
+            var random = new Random();
+            var t = random.Next(Transaction.ResponseTimeout, (int) (Transaction.ResponseTimeout * Transaction.ResponseRandomFactor));
+            Thread.Sleep(t);
             return ByteConverter.GetBytes("22.3 C");
         }
     }

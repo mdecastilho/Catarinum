@@ -16,5 +16,10 @@ namespace Catarinum.Coap.Util {
         public static string GetString(byte[] bytes) {
             return Encoding.GetString(bytes);
         }
+
+        public static string GetHexString(byte[] bytes) {
+            var hex = BitConverter.ToString(bytes);
+            return hex.Replace("-", "");
+        }
     }
 }

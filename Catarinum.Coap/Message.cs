@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Catarinum.Coap.Util;
 
 namespace Catarinum.Coap {
     public class Message {
@@ -14,38 +13,12 @@ namespace Catarinum.Coap {
         public const int OptionDeltaBits = 4;
         public const int OptionLengthBits = 4;
         private readonly List<Option> _options;
-        private Uri _uri;
-        public int Id { get; private set; }
+        public int Id { get; set; }
         public MessageType Type { get; private set; }
         public CodeRegistry Code { get; private set; }
         public byte[] Payload { get; set; }
         public string RemoteAddress { get; set; }
         public int Port { get; set; }
-
-        public Uri Uri {
-            get { return _uri; }
-            set {
-                _uri = value;
-                var parser = new UriParser(_uri);
-                RemoteAddress = parser.GetRemoteAddress();
-                Port = parser.GetPort();
-                _options.AddRange(parser.GetUriPath());
-                _options.AddRange(parser.GetUriQuery());
-            }
-        }
-
-        public string UriPath {
-            get {
-                var uriPath = "";
-                var options = _options.Where(o => o.Number == (int) OptionNumber.UriPath);
-
-                foreach (var option in options) {
-                    uriPath += string.Format("/{0}", ByteConverter.GetString(option.Value));
-                }
-
-                return uriPath;
-            }
-        }
 
         public byte[] Token {
             get {
@@ -77,6 +50,10 @@ namespace Catarinum.Coap {
             get { return Code.Equals(CodeRegistry.Empty); }
         }
 
+        public bool IsReply {
+            get { return IsAcknowledgement || IsReset; }
+        }
+
         public IEnumerable<Option> Options {
             get { return _options; }
         }
@@ -85,8 +62,8 @@ namespace Catarinum.Coap {
             get { return Options.Count(); }
         }
 
-        public Message(int id, MessageType type)
-            : this(id, type, CodeRegistry.Empty) {
+        public Message(MessageType type)
+            : this(type, CodeRegistry.Empty) {
 
             if (IsConfirmable) {
                 throw new ArgumentException("Confirmable message MUST NOT be empty.");
@@ -97,8 +74,7 @@ namespace Catarinum.Coap {
             }
         }
 
-        protected Message(int id, MessageType type, CodeRegistry code) {
-            Id = id;
+        protected Message(MessageType type, CodeRegistry code) {
             Type = type;
             Code = code;
             Payload = new byte[0];
@@ -111,6 +87,10 @@ namespace Catarinum.Coap {
 
         public Option GetFirstOption(OptionNumber number) {
             return _options.FirstOrDefault(o => o.Number == (int) number);
+        }
+
+        protected void AddOptions(IEnumerable<Option> options) {
+            _options.AddRange(options);
         }
     }
 }

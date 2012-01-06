@@ -10,8 +10,9 @@ namespace Catarinum.Examples.Client {
 
             Task.Factory.StartNew(() => {
                 while (true) {
+                    Console.WriteLine("***");
                     client.SendRequest();
-                    Thread.Sleep(10000);
+                    Thread.Sleep(30000);
                 }
             });
 

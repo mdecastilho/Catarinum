@@ -10,30 +10,30 @@ namespace Catarinum.Tests.Coap {
 
         [SetUp]
         public void SetUp() {
-            _message = new Message(1, MessageType.Acknowledgement);
+            _message = new Message(MessageType.Acknowledgement);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Confirmable message MUST NOT be empty.")]
         public void Confirmable_message_should_not_be_empty() {
-            new Message(1, MessageType.Confirmable);
+            new Message(MessageType.Confirmable);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Non-confirmable message MUST NOT be empty.")]
         public void Non_confirmable_message_message_should_not_be_empty() {
-            new Message(1, MessageType.NonConfirmable);
+            new Message(MessageType.NonConfirmable);
         }
 
         [Test]
         public void Acknowledgement_message_should_be_empty() {
-            var message = new Message(1, MessageType.Acknowledgement);
+            var message = new Message(MessageType.Acknowledgement);
             Assert.IsNotNull(message);
         }
 
         [Test]
         public void Reset_message_should_be_empty() {
-            var message = new Message(1, MessageType.Reset);
+            var message = new Message(MessageType.Reset);
             Assert.IsNotNull(message);
         }
 
@@ -50,36 +50,6 @@ namespace Catarinum.Tests.Coap {
             _message.AddOption(new Option(OptionNumber.Token));
             _message.AddOption(new Option(OptionNumber.Token));
             Assert.AreEqual(2, _message.OptionCount);
-        }
-
-        [Test]
-        public void Should_set_uri() {
-            _message.Uri = new Uri("coap://server/temperature");
-            Assert.AreEqual(1, _message.OptionCount);
-        }
-
-        [Test]
-        public void Should_get_remote_address() {
-            _message.Uri = new Uri("coap://server/temperature");
-            Assert.AreEqual("server", _message.RemoteAddress);
-        }
-
-        [Test]
-        public void Should_get_default_port() {
-            _message.Uri = new Uri("coap://server/temperature");
-            Assert.AreEqual(5683, _message.Port);
-        }
-
-        [Test]
-        public void Should_get_port() {
-            _message.Uri = new Uri("coap://server:8080/temperature");
-            Assert.AreEqual(8080, _message.Port);
-        }
-
-        [Test]
-        public void Should_get_uri_path() {
-            _message.Uri = new Uri("coap://server:8080/temperature");
-            Assert.AreEqual("/temperature", _message.UriPath);
         }
 
         [Test]

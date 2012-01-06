@@ -9,7 +9,7 @@ namespace Catarinum.Examples.Server {
             _transportLayer = new TransportLayer();
             _messageLayer = new MessageLayer(_transportLayer);
             _messageLayer.AddHandler(new ConsoleHandler());
-            _messageLayer.AddHandler(new RequestHandler(_messageLayer, new TemperatureResource()));
+            _messageLayer.AddHandler(new ResourceHandler(_messageLayer, new TemperatureResource()));
         }
 
         public void Start(string ipAddress, int port) {

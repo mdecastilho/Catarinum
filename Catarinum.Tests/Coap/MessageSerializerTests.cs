@@ -48,7 +48,7 @@ namespace Catarinum.Tests.Coap {
 
         [Test]
         public void Should_serialize_payload() {
-            var response = new Response(0x7d34, MessageType.Acknowledgement, CodeRegistry.Content) { Payload = ByteConverter.GetBytes("22.5 C") };
+            var response = new Response(MessageType.Acknowledgement, CodeRegistry.Content) { Payload = ByteConverter.GetBytes("22.5 C") };
             var bytes = _serializer.Serialize(response);
             var bits = Util.GetBits(bytes, 4, 6);
             Assert.AreEqual("001100100011001000101110001101010010000001000011", bits);

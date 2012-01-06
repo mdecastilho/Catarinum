@@ -4,17 +4,13 @@ using System.Net.Sockets;
 
 namespace Catarinum.Coap.Impl {
     public class TransportLayer : Layer {
-        private readonly IMessageSerializer _messageSerializer;
+        private readonly MessageSerializer _messageSerializer;
         private readonly Socket _socket;
         private readonly byte[] _buffer;
         private bool _isListening;
 
-        public TransportLayer()
-            : this(new MessageSerializer()) {
-        }
-
-        public TransportLayer(IMessageSerializer messageSerializer) {
-            _messageSerializer = messageSerializer;
+        public TransportLayer() {
+            _messageSerializer = new MessageSerializer();
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             _buffer = new byte[1024];
         }
@@ -30,6 +26,7 @@ namespace Catarinum.Coap.Impl {
             var endPoint = new IPEndPoint(IPAddress.Parse(message.RemoteAddress), message.Port);
 
             try {
+                Handle(message);
                 var bytes = _messageSerializer.Serialize(message);
                 _socket.BeginSendTo(bytes, 0, bytes.Length, SocketFlags.None, endPoint, OnSend, null);
 
@@ -72,7 +69,6 @@ namespace Catarinum.Coap.Impl {
                     message.RemoteAddress = ((IPEndPoint) sender).Address.ToString();
                     message.Port = ((IPEndPoint) sender).Port;
                     Handle(message);
-
                     _socket.BeginReceiveFrom(_buffer, 0, _buffer.Length, SocketFlags.None, ref sender, OnReceive, null);
                 }
             }

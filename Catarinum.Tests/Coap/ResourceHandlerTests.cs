@@ -5,16 +5,16 @@ using NUnit.Framework;
 
 namespace Catarinum.Tests.Coap {
     [TestFixture]
-    public class RequestHandlerTests {
+    public class ResourceHandlerTests {
         private Mock<ILayer> _messageLayerMock;
         private Mock<IResource> _resourceMock;
-        private RequestHandler _handler;
+        private ResourceHandler _handler;
 
         [SetUp]
         public void SetUp() {
             _messageLayerMock = new Mock<ILayer>();
             _resourceMock = new Mock<IResource>();
-            _handler = new RequestHandler(_messageLayerMock.Object, _resourceMock.Object);
+            _handler = new ResourceHandler(_messageLayerMock.Object, _resourceMock.Object);
             Examples.ResourceMock = _resourceMock;
         }
 
