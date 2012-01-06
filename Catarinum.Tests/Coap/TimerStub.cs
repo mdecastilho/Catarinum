@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Catarinum.Coap;
 
 namespace Catarinum.Tests.Coap {
@@ -8,11 +7,6 @@ namespace Catarinum.Tests.Coap {
         public List<int> Timeouts { get; set; }
         public int Ticks { get; set; }
         public int Count { get; set; }
-
-        public int Timeout {
-            get { return Timeouts.Last(); }
-            set { Timeouts.Add(value); }
-        }
 
         public void Start(Action<ITransaction> callback, ITransaction state, int timeout) {
             Timeouts = new List<int> { timeout };
@@ -24,5 +18,9 @@ namespace Catarinum.Tests.Coap {
         }
 
         public void Stop() { }
+
+        public void SetTimeout(int timeout) {
+            Timeouts.Add(timeout);
+        }
     }
 }

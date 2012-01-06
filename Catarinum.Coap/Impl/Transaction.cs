@@ -39,7 +39,7 @@ namespace Catarinum.Coap.Impl {
 
             transaction.Retransmissions++;
             transaction.Timeout *= 2;
-            _timer.Timeout = transaction.Timeout;
+            _timer.SetTimeout(transaction.Timeout);
             _messageLayer.SendMessageOverLowerLayer(transaction.Message);
         }
     }

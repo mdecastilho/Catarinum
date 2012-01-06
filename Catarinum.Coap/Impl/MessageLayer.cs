@@ -4,6 +4,8 @@ namespace Catarinum.Coap.Impl {
     public class MessageLayer : UpperLayer {
         private readonly ITransactionFactory _transactionFactory;
         private readonly Dictionary<int, ITransaction> _transactions;
+        private readonly MessageCache _replyCache;
+        private readonly MessageCache _duplicationCache;
 
         public MessageLayer(ILayer lowerLayer)
             : this(lowerLayer, new TransactionFactory()) {
@@ -13,6 +15,8 @@ namespace Catarinum.Coap.Impl {
             : base(lowerLayer) {
             _transactionFactory = transactionFactory;
             _transactions = new Dictionary<int, ITransaction>();
+            _replyCache = new MessageCache();
+            _duplicationCache = new MessageCache();
         }
 
         public IEnumerable<ITransaction> Transactions {
@@ -29,11 +33,25 @@ namespace Catarinum.Coap.Impl {
                 _transactions.Add(message.Id, transaction);
                 transaction.ScheduleRetransmission();
             }
+            else if (message.IsReply) {
+                _replyCache.Add(message);
+            }
 
             SendMessageOverLowerLayer(message);
         }
 
         public override void Handle(Message message) {
+            if (_duplicationCache.ContainsMessage(message)) {
+                if (message.IsConfirmable) {
+                    var reply = _replyCache.Get(message);
+                    SendMessageOverLowerLayer(reply);
+                }
+
+                return;
+            }
+
+            _duplicationCache.Add(message);
+
             if (message.IsReply) {
                 if (_transactions.ContainsKey(message.Id)) {
                     var transaction = _transactions[message.Id];

@@ -26,7 +26,6 @@ namespace Catarinum.Coap.Impl {
             var endPoint = new IPEndPoint(IPAddress.Parse(message.RemoteAddress), message.Port);
 
             try {
-                Handle(message);
                 var bytes = _messageSerializer.Serialize(message);
                 _socket.BeginSendTo(bytes, 0, bytes.Length, SocketFlags.None, endPoint, OnSend, null);
 

@@ -75,15 +75,6 @@ namespace Catarinum.Tests.Coap {
         }
 
         [Test]
-        [Ignore]
-        public void Should_not_handle_duplicated_requests() {
-            var request = Examples.Basic_get_request_causing_a_piggy_backed_response();
-            _handler.Handle(request);
-            _handler.Handle(request);
-            _resourceMock.Verify(r => r.Get(It.IsAny<byte[]>()), Times.Once());
-        }
-
-        [Test]
         public void Response_source_should_have_request_destination() {
             var request = Examples.Basic_get_request_causing_a_piggy_backed_response();
             _handler.Handle(request);
