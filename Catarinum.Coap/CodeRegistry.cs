@@ -2,8 +2,8 @@
     public enum CodeRegistry {
         Empty = 0,
         Get = 1,
-        Put = 2,
-        Post = 3,
+        Post = 2,
+        Put = 3,
         Delete = 4,
         Created = 65,
         Deleted = 66,
