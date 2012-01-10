@@ -8,7 +8,7 @@ namespace Catarinum.Examples.Client {
 
         public Client() {
             _messageLayer = new MessageLayer();
-            _messageLayer.AddHandler(new ConsoleHandler());
+            _messageLayer.RegisterObserver(new ConsoleHandler());
         }
 
         public void SendRequest() {

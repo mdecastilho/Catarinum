@@ -12,11 +12,14 @@ namespace Catarinum.Coap {
         }
 
         public void Stop() {
-            SetTimeout(Timeout.Infinite);
+            _timer.Change(Timeout.Infinite, Timeout.Infinite);
+            _timer = null;
         }
 
         public void SetTimeout(int timeout) {
-            _timer.Change(timeout, timeout);
+            if (_timer != null) {
+                _timer.Change(timeout, timeout);
+            }
         }
 
         private void TimerCallback(object state) {

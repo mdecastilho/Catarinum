@@ -3,8 +3,16 @@ using Catarinum.Coap;
 using Catarinum.Coap.Util;
 
 namespace Catarinum.Examples.Client {
-    public class ConsoleHandler : IHandler {
-        public void Handle(Message message) {
+    public class ConsoleHandler : IMessageObserver {
+        public void OnSend(Message message) {
+            var request = message as Request;
+
+            if (request != null) {
+                Console.WriteLine(string.Format("request sent ({0}): {1}", request.Id, request.Uri));
+            }
+        }
+
+        public void OnReceive(Message message) {
             var response = message as Response;
 
             if (response != null) {

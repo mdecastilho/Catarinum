@@ -6,8 +6,8 @@ namespace Catarinum.Examples.Server {
 
         public Server() {
             _messageLayer = new MessageLayer();
-            _messageLayer.AddHandler(new ConsoleHandler());
-            _messageLayer.AddHandler(new ResourceHandler(_messageLayer, new TemperatureResource()));
+            _messageLayer.RegisterObserver(new ConsoleHandler());
+            _messageLayer.RegisterObserver(new ResourceHandler(_messageLayer, new TemperatureResource()));
         }
 
         public void Start(string ipAddress, int port) {

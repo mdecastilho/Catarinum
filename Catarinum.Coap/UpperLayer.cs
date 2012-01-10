@@ -6,7 +6,7 @@
             get { return _lowerLayer; }
             private set {
                 _lowerLayer = value;
-                _lowerLayer.AddHandler(this);
+                _lowerLayer.RegisterObserver(this);
             }
         }
 

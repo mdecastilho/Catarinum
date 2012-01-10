@@ -37,7 +37,7 @@ namespace Catarinum.Coap {
             if (message.IsConfirmable) {
                 var transaction = _transactionFactory.Create(this, message);
                 _transactions.Add(message.Id, transaction);
-                transaction.ScheduleRetransmission();
+                transaction.ScheduleRetransmission(RetransmissionCallback, ErrorCallback);
             }
             else if (message.IsReply) {
                 _replyCache.Add(message);
@@ -46,17 +46,19 @@ namespace Catarinum.Coap {
             SendMessageOverLowerLayer(message);
         }
 
-        public override void Handle(Message message) {
-            if (_duplicationCache.ContainsMessage(message)) {
-                if (message.IsConfirmable) {
-                    var reply = _replyCache.Get(message);
-                    SendMessageOverLowerLayer(reply);
+        public override void OnReceive(Message message) {
+            lock (_duplicationCache) {
+                if (_duplicationCache.ContainsMessage(message)) {
+                    if (message.IsConfirmable) {
+                        var reply = _replyCache.Get(message);
+                        SendMessageOverLowerLayer(reply);
+                    }
+
+                    return;
                 }
 
-                return;
+                _duplicationCache.Add(message);
             }
-
-            _duplicationCache.Add(message);
 
             if (message.IsReply) {
                 if (_transactions.ContainsKey(message.Id)) {
@@ -66,11 +68,16 @@ namespace Catarinum.Coap {
                 }
             }
 
-            base.Handle(message);
+            base.OnReceive(message);
         }
 
-        public void RemoveTransaction(Message message) {
-            _transactions.Remove(message.Id);
+        private void RetransmissionCallback(ITransaction transaction) {
+            SendMessageOverLowerLayer(transaction.Message);
+        }
+
+        private void ErrorCallback(ITransaction transaction) {
+            transaction.Cancel();
+            _transactions.Remove(transaction.Message.Id);
         }
     }
 }

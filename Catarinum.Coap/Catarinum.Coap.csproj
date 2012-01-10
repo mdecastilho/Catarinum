@@ -56,7 +56,7 @@
     <Compile Include="MessageSerializer.cs" />
     <Compile Include="UpperLayer.cs" />
     <Compile Include="IResource.cs" />
-    <Compile Include="IHandler.cs" />
+    <Compile Include="IMessageObserver.cs" />
     <Compile Include="MediaTypeRegistry.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="ResourceHandler.cs" />

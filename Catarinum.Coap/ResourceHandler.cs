@@ -1,5 +1,5 @@
 ﻿namespace Catarinum.Coap {
-    public class ResourceHandler : IHandler {
+    public class ResourceHandler : IMessageObserver {
         private readonly ILayer _messageLayer;
         private readonly IResource _resource;
 
@@ -8,7 +8,9 @@
             _resource = resource;
         }
 
-        public void Handle(Message message) {
+        public void OnSend(Message message) { }
+
+        public void OnReceive(Message message) {
             var request = message as Request;
 
             if (request != null) {

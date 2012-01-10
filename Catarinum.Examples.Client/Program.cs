@@ -11,7 +11,7 @@ namespace Catarinum.Examples.Client {
             Task.Factory.StartNew(() => {
                 while (true) {
                     client.SendRequest();
-                    Thread.Sleep(30000);
+                    Thread.Sleep(60000);
                 }
             });
 

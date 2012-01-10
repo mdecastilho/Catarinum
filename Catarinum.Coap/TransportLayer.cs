@@ -26,8 +26,9 @@ namespace Catarinum.Coap {
             var endPoint = new IPEndPoint(IPAddress.Parse(message.RemoteAddress), message.Port);
 
             try {
+                OnSend(message);
                 var bytes = _messageSerializer.Serialize(message);
-                _socket.BeginSendTo(bytes, 0, bytes.Length, SocketFlags.None, endPoint, OnSend, null);
+                _socket.BeginSendTo(bytes, 0, bytes.Length, SocketFlags.None, endPoint, SendCallback, null);
 
                 if (!_isListening) {
                     BeginReceive(endPoint);
@@ -40,14 +41,14 @@ namespace Catarinum.Coap {
 
         private void BeginReceive(EndPoint sender) {
             try {
-                _socket.BeginReceiveFrom(_buffer, 0, _buffer.Length, SocketFlags.None, ref sender, OnReceive, null);
+                _socket.BeginReceiveFrom(_buffer, 0, _buffer.Length, SocketFlags.None, ref sender, ReceiveCallback, null);
             }
             catch (Exception e) {
                 Console.WriteLine(string.Format("receive message error: {0}", e.Message));
             }
         }
 
-        private void OnSend(IAsyncResult ar) {
+        private void SendCallback(IAsyncResult ar) {
             try {
                 _socket.EndSend(ar);
             }
@@ -56,7 +57,7 @@ namespace Catarinum.Coap {
             }
         }
 
-        private void OnReceive(IAsyncResult ar) {
+        private void ReceiveCallback(IAsyncResult ar) {
             try {
                 EndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                 var bytesRead = _socket.EndReceiveFrom(ar, ref sender);
@@ -67,12 +68,12 @@ namespace Catarinum.Coap {
                     var message = _messageSerializer.Deserialize(bytes);
                     message.RemoteAddress = ((IPEndPoint) sender).Address.ToString();
                     message.Port = ((IPEndPoint) sender).Port;
-                    Handle(message);
-                    _socket.BeginReceiveFrom(_buffer, 0, _buffer.Length, SocketFlags.None, ref sender, OnReceive, null);
+                    OnReceive(message);
+                    _socket.BeginReceiveFrom(_buffer, 0, _buffer.Length, SocketFlags.None, ref sender, ReceiveCallback, null);
                 }
             }
             catch (Exception e) {
-                Console.WriteLine(string.Format("receive message error: {0}", e.Message));
+                Console.WriteLine(string.Format("receive message error: {0}", e));
             }
         }
     }
