@@ -47,7 +47,7 @@ namespace Catarinum.Coap {
         }
 
         public override void OnReceive(Message message) {
-            lock (_duplicationCache) {
+            if (message.Id > 0) {
                 if (_duplicationCache.ContainsMessage(message)) {
                     if (message.IsConfirmable) {
                         var reply = _replyCache.Get(message);
@@ -58,13 +58,13 @@ namespace Catarinum.Coap {
                 }
 
                 _duplicationCache.Add(message);
-            }
 
-            if (message.IsReply) {
-                if (_transactions.ContainsKey(message.Id)) {
-                    var transaction = _transactions[message.Id];
-                    transaction.Cancel();
-                    _transactions.Remove(message.Id);
+                if (message.IsReply) {
+                    if (_transactions.ContainsKey(message.Id)) {
+                        var transaction = _transactions[message.Id];
+                        transaction.Cancel();
+                        _transactions.Remove(message.Id);
+                    }
                 }
             }
 
