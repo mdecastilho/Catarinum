@@ -1,4 +1,5 @@
 ﻿using Catarinum.Coap;
+using Catarinum.Coap.Layers;
 
 namespace Catarinum.Examples.Server {
     public class Server {

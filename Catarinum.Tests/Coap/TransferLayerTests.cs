@@ -1,4 +1,5 @@
 using Catarinum.Coap;
+using Catarinum.Coap.Layers;
 using Moq;
 using NUnit.Framework;
 
@@ -13,7 +14,7 @@ namespace Catarinum.Tests.Coap {
         public void SetUp() {
             _lowerLayerMock = new Mock<ILayer>();
             _observer = new Mock<IMessageObserver>();
-            _transferLayer = new TransferLayer(_lowerLayerMock.Object, 512);
+            _transferLayer = new TransferLayer(_lowerLayerMock.Object);
             _transferLayer.RegisterObserver(_observer.Object);
 
             var id = 1234;
@@ -56,10 +57,13 @@ namespace Catarinum.Tests.Coap {
         }
 
         private void Simple_blockwise_get_request() {
-            _transferLayer.Send(BlockExamples.Simple_blockwise_get());
+            var request = BlockExamples.Simple_blockwise_get();
+            _transferLayer.Send(request);
 
             for (var i = 0; i < 3; i++) {
-                _transferLayer.OnReceive(BlockExamples.Simple_blockwise_get_block(i));
+                var block = BlockExamples.Simple_blockwise_get_block(i);
+                block.Request = request;
+                _transferLayer.OnReceive(block);
             }
         }
 

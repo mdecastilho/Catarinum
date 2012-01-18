@@ -1,4 +1,4 @@
-﻿namespace Catarinum.Coap {
+﻿namespace Catarinum.Coap.Layers {
     public abstract class UpperLayer : Layer {
         private ILayer _lowerLayer;
 

@@ -1,4 +1,5 @@
 ﻿using Catarinum.Coap;
+using Catarinum.Coap.Layers;
 using NUnit.Framework;
 
 namespace Catarinum.Tests.Coap {

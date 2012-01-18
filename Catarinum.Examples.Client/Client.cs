@@ -1,5 +1,6 @@
 ﻿using System;
 using Catarinum.Coap;
+using Catarinum.Coap.Layers;
 using Catarinum.Coap.Util;
 
 namespace Catarinum.Examples.Client {

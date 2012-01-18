@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Catarinum.Coap {
+namespace Catarinum.Coap.Layers {
     public abstract class Layer : ILayer, IMessageObserver {
         private readonly List<IMessageObserver> _observers;
 

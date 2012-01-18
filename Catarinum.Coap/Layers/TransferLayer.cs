@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 
-namespace Catarinum.Coap {
+namespace Catarinum.Coap.Layers {
     public class TransferLayer : UpperLayer {
         public const int DefaultBlockSize = 512;
         private readonly TokenManager _tokenManager;
-        private readonly Dictionary<string, Request> _transactions;
         private readonly Dictionary<string, Message> _incomplete;
         private readonly int _szx;
 
@@ -15,7 +14,6 @@ namespace Catarinum.Coap {
         public TransferLayer(ILayer lowerLayer, int blockSize)
             : base(lowerLayer) {
             _tokenManager = new TokenManager();
-            _transactions = new Dictionary<string, Request>();
             _incomplete = new Dictionary<string, Message>();
 
             if (blockSize > 0) {
@@ -24,10 +22,6 @@ namespace Catarinum.Coap {
         }
 
         public override void Send(Message message) {
-            if (message is Request) {
-                _transactions[message.GetTransactionKey()] = (Request) message;
-            }
-
             var num = 0;
             var szx = _szx;
 
@@ -65,10 +59,6 @@ namespace Catarinum.Coap {
         }
 
         public override void OnReceive(Message message) {
-            if (message is Response) {
-                ((Response) message).Request = _transactions[message.GetTransactionKey()];
-            }
-
             var block1 = message.GetFirstOption(OptionNumber.Block1) as BlockOption;
             var block2 = message.GetFirstOption(OptionNumber.Block2) as BlockOption;
 
@@ -126,8 +116,8 @@ namespace Catarinum.Coap {
                 Message reply = null;
 
                 if (message is Response) {
-                    var request = _transactions[key];
-                    reply = new Request(CodeRegistry.Get, message.IsConfirmable) { Uri = request.Uri, Token = message.Token };
+                    var uri = ((Response) message).Request.Uri;
+                    reply = new Request(CodeRegistry.Get, message.IsConfirmable) { Uri = uri, Token = message.Token };
                     reply.AddOption(new BlockOption(OptionNumber.Block2, blockOption.Num + 1, 0, blockOption.Szx));
                 }
                 else if (message is Request) {

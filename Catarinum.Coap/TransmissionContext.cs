@@ -1,4 +1,5 @@
 ﻿using System;
+using Catarinum.Coap.Layers;
 
 namespace Catarinum.Coap {
     public class TransmissionContext : ITransmissionContext {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Catarinum.Coap {
+namespace Catarinum.Coap.Layers {
     public class MessageLayer : UpperLayer {
         public const int ResponseTimeout = 2000;
         public const double ResponseRandomFactor = 1.5;

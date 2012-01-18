@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace Catarinum.Coap {
+namespace Catarinum.Coap.Layers {
     public class TransportLayer : Layer {
         private readonly MessageSerializer _messageSerializer;
         private readonly Socket _socket;
@@ -66,8 +66,11 @@ namespace Catarinum.Coap {
                     var bytes = new byte[bytesRead];
                     Buffer.BlockCopy(_buffer, 0, bytes, 0, bytesRead);
                     var message = _messageSerializer.Deserialize(bytes);
+
+                    // refactor this (to other layer?)
                     message.RemoteAddress = ((IPEndPoint) sender).Address.ToString();
                     message.Port = ((IPEndPoint) sender).Port;
+
                     OnReceive(message);
                     _socket.BeginReceiveFrom(_buffer, 0, _buffer.Length, SocketFlags.None, ref sender, ReceiveCallback, null);
                 }
