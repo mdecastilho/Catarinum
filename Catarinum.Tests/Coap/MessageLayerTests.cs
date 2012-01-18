@@ -6,16 +6,16 @@ using NUnit.Framework;
 namespace Catarinum.Tests.Coap {
     [TestFixture]
     public class MessageLayerTests {
-        private Mock<ITransaction> _transactionMock;
-        private Mock<ITransactionFactory> _transactionFactoryMock;
+        private Mock<ITransmissionContext> _transactionMock;
+        private Mock<ITransmissionContextFactory> _transactionFactoryMock;
         private Mock<ILayer> _lowerLayerMock;
         private Mock<IMessageObserver> _observer;
         private MessageLayer _messageLayer;
 
         [SetUp]
         public void SetUp() {
-            _transactionMock = new Mock<ITransaction>();
-            _transactionFactoryMock = new Mock<ITransactionFactory>();
+            _transactionMock = new Mock<ITransmissionContext>();
+            _transactionFactoryMock = new Mock<ITransmissionContextFactory>();
             _lowerLayerMock = new Mock<ILayer>();
             _observer = new Mock<IMessageObserver>();
             _messageLayer = new MessageLayer(_lowerLayerMock.Object, _transactionFactoryMock.Object);
@@ -38,24 +38,24 @@ namespace Catarinum.Tests.Coap {
         }
 
         [Test]
-        public void Should_add_transaction_if_confirmable() {
+        public void Should_schedule_retransmission_if_confirmable() {
             var request = new Request(CodeRegistry.Get, true);
             _messageLayer.Send(request);
-            Assert.AreEqual(1, _messageLayer.Transactions.Count());
+            Assert.AreEqual(1, _messageLayer.Retransmissions.Count());
         }
 
         [Test]
-        public void Should_remove_transaction_if_reply_received() {
+        public void Should_cancel_retransmission_if_reply_received() {
             var request = new Request(CodeRegistry.Get, true);
             _messageLayer.Send(request);
             var ack = new Message(MessageType.Acknowledgement) { Id = request.Id };
             _messageLayer.OnReceive(ack);
-            Assert.AreEqual(0, _messageLayer.Transactions.Count());
+            Assert.AreEqual(0, _messageLayer.Retransmissions.Count());
         }
 
         [Test]
         public void Should_ignore_duplicated_messages() {
-            var response = new Response(MessageType.NonConfirmable, CodeRegistry.Content) { Id = 1, RemoteAddress = "127.0.0.1" };
+            var response = new Response(MessageType.NonConfirmable, CodeRegistry.Content) { Id = 1 };
             _messageLayer.OnReceive(response);
             _messageLayer.OnReceive(response);
             _observer.Verify(h => h.OnReceive(response), Times.Once());
@@ -63,8 +63,8 @@ namespace Catarinum.Tests.Coap {
 
         [Test]
         public void Should_reply_duplicated_requests_from_cache_if_confirmable() {
-            var request = new Request(CodeRegistry.Get, true) { Id = 1, RemoteAddress = "127.0.0.1" };
-            var ack = new Message(MessageType.Acknowledgement) { Id = 1, RemoteAddress = "127.0.0.1" };
+            var request = new Request(CodeRegistry.Get, true) { Id = 1 };
+            var ack = new Message(MessageType.Acknowledgement) { Id = 1 };
             _messageLayer.OnReceive(request);
             _messageLayer.Send(ack);
             _messageLayer.OnReceive(request);

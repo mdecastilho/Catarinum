@@ -13,7 +13,8 @@ namespace Catarinum.Examples.Client {
 
         public void SendRequest() {
             var uri = new Uri("coap://127.0.0.1/temperature");
-            var request = new Request(CodeRegistry.Get, true) { Uri = uri, Token = ByteConverter.GetBytes(0xcafe) };
+            var request = new Request(CodeRegistry.Get, true) { Uri = uri };
+            request.AddOption(new Option(OptionNumber.Token, ByteConverter.GetBytes(0xcafe)));
             _messageLayer.Send(request);
         }
     }

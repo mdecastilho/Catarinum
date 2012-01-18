@@ -14,23 +14,21 @@
             var request = message as Request;
 
             if (request != null) {
-                var uri = request.GetFirstOption(OptionNumber.UriPath).Value;
-
-                if (CanBePiggyBacked(uri)) {
-                    Respond(request, uri, true);
+                if (CanBePiggyBacked(request)) {
+                    Respond(request, true);
                 }
                 else {
                     if (request.IsConfirmable) {
                         Accept(request);
                     }
 
-                    Respond(request, uri);
+                    Respond(request);
                 }
             }
         }
 
-        private bool CanBePiggyBacked(byte[] uri) {
-            return _resource.CanGet(uri);
+        private bool CanBePiggyBacked(Request request) {
+            return _resource.CanGet(request.Uri);
         }
 
         private void Accept(Request request) {
@@ -38,23 +36,23 @@
             _messageLayer.Send(ack);
         }
 
-        private void Respond(Request request, byte[] uri, bool isPiggyBacked = false) {
+        private void Respond(Request request, bool isPiggyBacked = false) {
             var type = isPiggyBacked ? MessageType.Acknowledgement : request.Type;
             var code = CodeRegistry.Content;
             var payload = new byte[0];
 
             try {
-                payload = _resource.Get(uri);
+                payload = _resource.Get(request.Uri);
             }
             catch (ResponseError error) {
                 code = error.Code;
             }
 
             var response = new Response(type, code) {
+                Payload = payload,
                 RemoteAddress = request.RemoteAddress,
                 Port = request.Port,
-                Token = request.Token,
-                Payload = payload
+                Token = request.Token
             };
 
             if (isPiggyBacked) {

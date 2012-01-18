@@ -19,19 +19,19 @@ namespace Catarinum.Coap {
             { OptionNumber.IfNoneMatch, OptionFormat.Uint },
         };
 
-        public int Number { get; private set; }
+        public OptionNumber Number { get; private set; }
         public byte[] Value { get; set; }
 
         public bool IsCritical {
-            get { return Number % 2 > 0; }
+            get { return (int) Number % 2 > 0; }
         }
 
         public bool IsElective {
-            get { return Number % 2 == 0; }
+            get { return (int) Number % 2 == 0; }
         }
 
         public OptionFormat Format {
-            get { return Formats[(OptionNumber) Number]; }
+            get { return Formats[Number]; }
         }
 
         public Option(OptionNumber number)
@@ -39,7 +39,7 @@ namespace Catarinum.Coap {
         }
 
         public Option(OptionNumber number, byte[] value) {
-            Number = (int) number;
+            Number = number;
             Value = value;
         }
     }

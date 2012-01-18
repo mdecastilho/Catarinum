@@ -16,7 +16,7 @@ namespace Catarinum.Examples.Server {
             var request = message as Request;
 
             if (request != null) {
-                Console.WriteLine(string.Format("request received ({0}): {1}", request.Id, request.UriPath));
+                Console.WriteLine(string.Format("request received ({0}): {1}", request.Id, request.Uri.LocalPath));
             }
         }
     }

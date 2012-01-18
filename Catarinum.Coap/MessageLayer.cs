@@ -2,8 +2,11 @@
 
 namespace Catarinum.Coap {
     public class MessageLayer : UpperLayer {
-        private readonly ITransactionFactory _transactionFactory;
-        private readonly Dictionary<int, ITransaction> _transactions;
+        public const int ResponseTimeout = 2000;
+        public const double ResponseRandomFactor = 1.5;
+        public const int MaxRetransmissions = 4;
+        private readonly ITransmissionContextFactory _transmissionContextFactory;
+        private readonly Dictionary<int, ITransmissionContext> _retransmissions;
         private readonly IdSequence _idSequence;
         private readonly MessageCache _replyCache;
         private readonly MessageCache _duplicationCache;
@@ -13,20 +16,20 @@ namespace Catarinum.Coap {
         }
 
         public MessageLayer(ILayer lowerLayer)
-            : this(lowerLayer, new TransactionFactory()) {
+            : this(lowerLayer, new TransmissionContextFactory()) {
         }
 
-        public MessageLayer(ILayer lowerLayer, ITransactionFactory transactionFactory)
+        public MessageLayer(ILayer lowerLayer, ITransmissionContextFactory transmissionContextFactory)
             : base(lowerLayer) {
-            _transactionFactory = transactionFactory;
-            _transactions = new Dictionary<int, ITransaction>();
+            _transmissionContextFactory = transmissionContextFactory;
+            _retransmissions = new Dictionary<int, ITransmissionContext>();
             _idSequence = new IdSequence();
             _replyCache = new MessageCache();
             _duplicationCache = new MessageCache();
         }
 
-        public IEnumerable<ITransaction> Transactions {
-            get { return _transactions.Values; }
+        public IEnumerable<ITransmissionContext> Retransmissions {
+            get { return _retransmissions.Values; }
         }
 
         public override void Send(Message message) {
@@ -35,9 +38,9 @@ namespace Catarinum.Coap {
             }
 
             if (message.IsConfirmable) {
-                var transaction = _transactionFactory.Create(this, message);
-                _transactions.Add(message.Id, transaction);
-                transaction.ScheduleRetransmission(RetransmissionCallback, ErrorCallback);
+                var transaction = _transmissionContextFactory.Create(this, message);
+                _retransmissions.Add(message.Id, transaction);
+                transaction.ScheduleRetry(RetryCallback, ErrorCallback);
             }
             else if (message.IsReply) {
                 _replyCache.Add(message);
@@ -60,10 +63,10 @@ namespace Catarinum.Coap {
                 _duplicationCache.Add(message);
 
                 if (message.IsReply) {
-                    if (_transactions.ContainsKey(message.Id)) {
-                        var transaction = _transactions[message.Id];
+                    if (_retransmissions.ContainsKey(message.Id)) {
+                        var transaction = _retransmissions[message.Id];
                         transaction.Cancel();
-                        _transactions.Remove(message.Id);
+                        _retransmissions.Remove(message.Id);
                     }
                 }
             }
@@ -71,13 +74,13 @@ namespace Catarinum.Coap {
             base.OnReceive(message);
         }
 
-        private void RetransmissionCallback(ITransaction transaction) {
-            SendMessageOverLowerLayer(transaction.Message);
+        private void RetryCallback(ITransmissionContext transmissionContext) {
+            SendMessageOverLowerLayer(transmissionContext.Message);
         }
 
-        private void ErrorCallback(ITransaction transaction) {
-            transaction.Cancel();
-            _transactions.Remove(transaction.Message.Id);
+        private void ErrorCallback(ITransmissionContext transmissionContext) {
+            transmissionContext.Cancel();
+            _retransmissions.Remove(transmissionContext.Message.Id);
         }
     }
 }

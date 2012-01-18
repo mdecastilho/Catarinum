@@ -21,5 +21,9 @@ namespace Catarinum.Coap.Util {
             var hex = BitConverter.ToString(bytes);
             return hex.Replace("-", "");
         }
+
+        public static int GetInt(byte[] bytes) {
+            return BitConverter.ToInt32(bytes, 0);
+        }
     }
 }

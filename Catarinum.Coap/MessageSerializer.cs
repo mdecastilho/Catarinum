@@ -49,12 +49,12 @@ namespace Catarinum.Coap {
             var lastOptionNumber = 0;
 
             foreach (var option in options) {
-                var delta = option.Number - lastOptionNumber;
+                var delta = (int) option.Number - lastOptionNumber;
                 var lenght = option.Value.Length;
                 writer.Write(delta, Message.OptionDeltaBits);
                 writer.Write(lenght, Message.OptionLengthBits);
                 writer.WriteBytes(option.Value);
-                lastOptionNumber = option.Number;
+                lastOptionNumber = (int) option.Number;
             }
 
             return writer.GetBytes();

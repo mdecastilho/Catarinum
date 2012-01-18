@@ -4,9 +4,9 @@ using System.Threading;
 namespace Catarinum.Coap {
     public class RetransmissionTimer : ITimer {
         private Timer _timer;
-        private Action<ITransaction> _callback;
+        private Action<ITransmissionContext> _callback;
 
-        public void Start(Action<ITransaction> callback, ITransaction state, int timeout) {
+        public void Start(Action<ITransmissionContext> callback, ITransmissionContext state, int timeout) {
             _callback = callback;
             _timer = new Timer(TimerCallback, state, timeout, timeout);
         }
@@ -23,7 +23,7 @@ namespace Catarinum.Coap {
         }
 
         private void TimerCallback(object state) {
-            _callback((Transaction) state);
+            _callback((TransmissionContext) state);
         }
     }
 }

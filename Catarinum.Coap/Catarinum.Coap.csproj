@@ -40,17 +40,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockOption.cs" />
     <Compile Include="ILayer.cs" />
     <Compile Include="IdSequence.cs" />
     <Compile Include="MessageCache.cs" />
     <Compile Include="MessageFactory.cs" />
+    <Compile Include="MessageHelper.cs" />
     <Compile Include="RetransmissionTimer.cs" />
     <Compile Include="ITimer.cs" />
-    <Compile Include="TransactionFactory.cs" />
-    <Compile Include="ITransaction.cs" />
-    <Compile Include="ITransactionFactory.cs" />
+    <Compile Include="TokenManager.cs" />
+    <Compile Include="TransmissionContextFactory.cs" />
+    <Compile Include="ITransmissionContext.cs" />
+    <Compile Include="ITransmissionContextFactory.cs" />
     <Compile Include="Layer.cs" />
-    <Compile Include="Transaction.cs" />
+    <Compile Include="TransmissionContext.cs" />
+    <Compile Include="TransferLayer.cs" />
     <Compile Include="TransportLayer.cs" />
     <Compile Include="MessageLayer.cs" />
     <Compile Include="MessageSerializer.cs" />
@@ -69,7 +73,7 @@
     <Compile Include="Response.cs" />
     <Compile Include="CodeRegistry.cs" />
     <Compile Include="ResponseError.cs" />
-    <Compile Include="UriParser.cs" />
+    <Compile Include="UriHelper.cs" />
     <Compile Include="Util\ByteConverter.cs" />
     <Compile Include="Util\DatagramReader.cs" />
     <Compile Include="Util\DatagramWriter.cs" />

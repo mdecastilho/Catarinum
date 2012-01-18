@@ -12,7 +12,7 @@ namespace Catarinum.Coap {
         public const int IdBits = 16;
         public const int OptionDeltaBits = 4;
         public const int OptionLengthBits = 4;
-        private readonly List<Option> _options;
+        private readonly Dictionary<OptionNumber, List<Option>> _options;
         public int Id { get; set; }
         public MessageType Type { get; private set; }
         public CodeRegistry Code { get; private set; }
@@ -23,7 +23,7 @@ namespace Catarinum.Coap {
         public byte[] Token {
             get {
                 var token = GetFirstOption(OptionNumber.Token);
-                return token != null ? token.Value : new byte[0];
+                return token != null ? token.Value : TokenManager.EmptyToken;
             }
             set {
                 AddOption(new Option(OptionNumber.Token, value));
@@ -55,7 +55,15 @@ namespace Catarinum.Coap {
         }
 
         public IEnumerable<Option> Options {
-            get { return _options; }
+            get {
+                var options = new List<Option>();
+
+                foreach (var list in _options.Values) {
+                    options.AddRange(list);
+                }
+
+                return options;
+            }
         }
 
         public int OptionCount {
@@ -78,19 +86,31 @@ namespace Catarinum.Coap {
             Type = type;
             Code = code;
             Payload = new byte[0];
-            _options = new List<Option>();
+            _options = new Dictionary<OptionNumber, List<Option>>();
         }
 
         public void AddOption(Option option) {
-            _options.Add(option);
+            AddOptions(option.Number, new List<Option> { option });
+        }
+
+        public void AddOptions(OptionNumber number, IEnumerable<Option> options) {
+            if (!_options.ContainsKey(number)) {
+                _options.Add(number, new List<Option>());
+            }
+
+            _options[number].AddRange(options);
         }
 
         public Option GetFirstOption(OptionNumber number) {
-            return _options.FirstOrDefault(o => o.Number == (int) number);
+            if (!_options.ContainsKey(number)) {
+                return null;
+            }
+
+            return _options[number].FirstOrDefault();
         }
 
-        protected void AddOptions(IEnumerable<Option> options) {
-            _options.AddRange(options);
+        public void SetOption(Option option) {
+            _options[option.Number] = new List<Option> { option };
         }
     }
 }

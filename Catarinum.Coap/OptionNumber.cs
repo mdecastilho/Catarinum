@@ -13,6 +13,8 @@
         Accept = 12,
         IfMatch = 13,
         UriQuery = 15,
-        IfNoneMatch = 21
+        Block2 = 17,
+        Block1 = 19,
+        IfNoneMatch = 21,
     }
 }

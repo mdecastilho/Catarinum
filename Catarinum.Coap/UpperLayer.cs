@@ -14,7 +14,7 @@
             LowerLayer = lowerLayer;
         }
 
-        public void SendMessageOverLowerLayer(Message message) {
+        protected virtual void SendMessageOverLowerLayer(Message message) {
             LowerLayer.Send(message);
         }
     }

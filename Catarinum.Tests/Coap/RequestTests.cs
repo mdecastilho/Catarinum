@@ -1,5 +1,6 @@
 ﻿using System;
 using Catarinum.Coap;
+using Catarinum.Coap.Util;
 using NUnit.Framework;
 
 namespace Catarinum.Tests.Coap {
@@ -30,33 +31,11 @@ namespace Catarinum.Tests.Coap {
         }
 
         [Test]
-        public void Should_set_uri() {
-            _request.Uri = new Uri("coap://server/temperature");
-            Assert.AreEqual(1, _request.OptionCount);
-        }
-
-        [Test]
-        public void Should_get_remote_address() {
-            _request.Uri = new Uri("coap://server/temperature");
-            Assert.AreEqual("server", _request.RemoteAddress);
-        }
-
-        [Test]
-        public void Should_get_default_port() {
-            _request.Uri = new Uri("coap://server/temperature");
-            Assert.AreEqual(5683, _request.Port);
-        }
-
-        [Test]
-        public void Should_get_port() {
-            _request.Uri = new Uri("coap://server:8080/temperature");
-            Assert.AreEqual(8080, _request.Port);
-        }
-
-        [Test]
-        public void Should_get_uri_path() {
-            _request.Uri = new Uri("coap://server:8080/temperature");
-            Assert.AreEqual("/temperature", _request.UriPath);
+        public void Should_get_uri() {
+            var request = new Request(CodeRegistry.Get, false) { RemoteAddress = "server" };
+            request.AddOption(new Option(OptionNumber.UriPath, ByteConverter.GetBytes("temperature")));
+            Assert.AreEqual("coap://server/temperature", request.Uri.ToString());
+            Assert.AreEqual(1, request.OptionCount);
         }
     }
 }

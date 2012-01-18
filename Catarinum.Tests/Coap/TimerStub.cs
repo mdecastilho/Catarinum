@@ -8,7 +8,7 @@ namespace Catarinum.Tests.Coap {
         public int Ticks { get; set; }
         public int Count { get; set; }
 
-        public void Start(Action<ITransaction> callback, ITransaction state, int timeout) {
+        public void Start(Action<ITransmissionContext> callback, ITransmissionContext state, int timeout) {
             Timeouts = new List<int> { timeout };
 
             while (Count < Ticks) {

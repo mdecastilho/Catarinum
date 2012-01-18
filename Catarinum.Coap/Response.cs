@@ -2,6 +2,8 @@
 
 namespace Catarinum.Coap {
     public class Response : Message {
+        public Request Request { get; set; }
+
         public bool IsPiggyBacked {
             get { return IsAcknowledgement && Code == CodeRegistry.Content && Payload.Length > 0; }
         }
