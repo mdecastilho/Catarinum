@@ -30,6 +30,10 @@ namespace Catarinum.Coap {
             }
         }
 
+        public bool HasToken {
+            get { return Token != TokenManager.EmptyToken; }
+        }
+
         public bool IsConfirmable {
             get { return Type.Equals(MessageType.Confirmable); }
         }

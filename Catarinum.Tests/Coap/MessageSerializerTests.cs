@@ -1,5 +1,6 @@
 using System.Runtime.Serialization;
 using Catarinum.Coap;
+using Catarinum.Coap.Layers;
 using Catarinum.Coap.Util;
 using NUnit.Framework;
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Catarinum.Coap {
+namespace Catarinum.Coap.Layers {
     public class MessageCache {
         private readonly Dictionary<string, Message> _cache;
 

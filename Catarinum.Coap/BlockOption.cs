@@ -18,6 +18,11 @@ namespace Catarinum.Coap {
             set { Value = Encode(Num, value, M); }
         }
 
+        public int BlockSize {
+            get { return DecodeSzx(Szx); }
+            set { Szx = EncodeSzx(value); }
+        }
+
         public BlockOption(OptionNumber number)
             : base(number) {
         }

@@ -14,7 +14,7 @@ namespace Catarinum.Tests.Coap {
         public void SetUp() {
             _lowerLayerMock = new Mock<ILayer>();
             _observer = new Mock<IMessageObserver>();
-            _transferLayer = new TransferLayer(_lowerLayerMock.Object);
+            _transferLayer = new TransferLayer(_lowerLayerMock.Object, 128);
             _transferLayer.RegisterObserver(_observer.Object);
 
             var id = 1234;
@@ -25,37 +25,46 @@ namespace Catarinum.Tests.Coap {
             });
         }
 
-        //[Test]
-        //public void Should_send_message_in_blocks() {
-        //    var response = new Response(MessageType.Confirmable, CodeRegistry.Content) { Payload = new byte[32] };
-        //    _transferLayer.Send(response);
-        //    _lowerLayerMock.Verify(l => l.Send(It.Is<Response>(block => block.Payload.Length == 16)));
-        //}
-
         [Test]
-        public void Should_receive_message_in_blocks() {
+        public void Should_receive_response_in_blocks() {
             Simple_blockwise_get_request();
             _observer.Verify(o => o.OnReceive(It.Is<Response>(r => r.Payload.Length == 384)));
         }
 
         [Test]
-        public void Should_request_next_block() {
+        public void Should_request_next_response_block() {
             Simple_blockwise_get_request();
-            _lowerLayerMock.Verify(l => l.Send(It.Is<Request>(r => RequestedBlock(r, 1))));
-            _lowerLayerMock.Verify(l => l.Send(It.Is<Request>(r => RequestedBlock(r, 2))));
+            _lowerLayerMock.Verify(l => l.Send(It.Is<Request>(r => r.GetFirstOption(OptionNumber.Block2) != null && ((BlockOption) r.GetFirstOption(OptionNumber.Block2)).Num == 1)));
+            _lowerLayerMock.Verify(l => l.Send(It.Is<Request>(r => r.GetFirstOption(OptionNumber.Block2) != null && ((BlockOption) r.GetFirstOption(OptionNumber.Block2)).Num == 2)));
         }
 
         [Test]
-        public void Should_negotiate_block_size() {
+        public void Should_early_negotiate_response_block_size() {
             Blockwise_get_with_early_negotiation();
             _lowerLayerMock.Verify(l => l.Send(It.Is<Response>(r => r.Payload.Length == 64)), Times.Exactly(6));
         }
 
-        private static bool RequestedBlock(Request request, int num) {
-            return request.GetFirstOption(OptionNumber.Block2) != null
-                && ((BlockOption) request.GetFirstOption(OptionNumber.Block2)).Num == num;
+        [Test]
+        public void Should_late_negotiate_response_block_size() {
+            Blockwise_get_with_late_negotiation();
+            _lowerLayerMock.Verify(l => l.Send(It.Is<Response>(r => r.Payload.Length == 128)), Times.Once());
+            _lowerLayerMock.Verify(l => l.Send(It.Is<Response>(r => r.Payload.Length == 64)), Times.Exactly(4));
         }
 
+        [Test]
+        public void Should_send_request_in_blocks() {
+            Simple_atomic_blockwise_put();
+            _lowerLayerMock.Verify(l => l.Send(It.Is<Request>(block => block.Payload.Length == 128)), Times.Exactly(3));
+        }
+
+        [Test]
+        public void Should_negotiate_request_block_size() {
+            Simple_atomic_blockwise_put_with_negotiation();
+            _lowerLayerMock.Verify(l => l.Send(It.Is<Request>(r => r.Payload.Length == 128)), Times.Once());
+            _lowerLayerMock.Verify(l => l.Send(It.Is<Request>(r => r.Payload.Length == 32)), Times.Exactly(3));
+        }
+
+        // block examples
         private void Simple_blockwise_get_request() {
             var request = BlockExamples.Simple_blockwise_get();
             _transferLayer.Send(request);
@@ -77,6 +86,36 @@ namespace Catarinum.Tests.Coap {
             for (var i = 0; i < 6; i++) {
                 _transferLayer.OnReceive(BlockExamples.Blockwise_get_with_early_negotiation(i));
             }
+        }
+
+        private void Blockwise_get_with_late_negotiation() {
+            _observer.Setup(o => o.OnReceive(It.IsAny<Message>())).Callback<Message>(m => {
+                var response = BlockExamples.Blockwise_get_with_late_negotiation_response();
+                response.Request = (Request) m;
+                _transferLayer.Send(response);
+            });
+
+            _transferLayer.OnReceive(BlockExamples.Blockwise_get_with_late_negotiation(0));
+            _transferLayer.OnReceive(BlockExamples.Blockwise_get_with_late_negotiation(2));
+            _transferLayer.OnReceive(BlockExamples.Blockwise_get_with_late_negotiation(3));
+            _transferLayer.OnReceive(BlockExamples.Blockwise_get_with_late_negotiation(4));
+            _transferLayer.OnReceive(BlockExamples.Blockwise_get_with_late_negotiation(5));
+        }
+
+        private void Simple_atomic_blockwise_put() {
+            _transferLayer.Send(BlockExamples.Simple_atomic_blockwise_put());
+
+            for (var i = 0; i < 3; i++) {
+                _transferLayer.OnReceive(BlockExamples.Simple_atomic_blockwise_put_response(i));
+            }
+        }
+
+        private void Simple_atomic_blockwise_put_with_negotiation() {
+            _transferLayer.Send(BlockExamples.Simple_atomic_blockwise_put_with_negotiation());
+            _transferLayer.OnReceive(BlockExamples.Simple_atomic_blockwise_put_with_negotiation_response(0));
+            _transferLayer.OnReceive(BlockExamples.Simple_atomic_blockwise_put_with_negotiation_response(4));
+            _transferLayer.OnReceive(BlockExamples.Simple_atomic_blockwise_put_with_negotiation_response(5));
+            _transferLayer.OnReceive(BlockExamples.Simple_atomic_blockwise_put_with_negotiation_response(6));
         }
     }
 }

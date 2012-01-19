@@ -1,14 +1,35 @@
 ﻿using System;
-using Catarinum.Coap.Util;
 
-namespace Catarinum.Coap {
-    public static class MessageHelper {
-        public static string GetKey(this Message message) {
-            return string.Format("{0}:{1}-{2}", message.RemoteAddress, message.Port, message.Id);
+namespace Catarinum.Coap.Layers {
+    public static class BlockHelper {
+        public static BlockOption GetBlockOption(this Message message, OptionNumber optionNumber) {
+            return message.GetFirstOption(optionNumber) as BlockOption;
         }
 
-        public static string GetTransactionKey(this Message message) {
-            return ByteConverter.GetString(message.Token);
+        public static bool IsBlockwise(this Message message) {
+            var block1 = message.GetBlockOption(OptionNumber.Block1);
+            var block2 = message.GetBlockOption(OptionNumber.Block2);
+            return block1 != null || block2 != null;
+        }
+
+        public static bool IsBlockwiseRequest(this Message message) {
+            var block2 = message.GetBlockOption(OptionNumber.Block2);
+            return message is Request && block2 != null;
+        }
+
+        public static bool IsBlockwiseAcknowledgement(this Message message) {
+            var block1 = message.GetBlockOption(OptionNumber.Block1);
+            return message is Response && block1 != null;
+        }
+
+        public static bool IsBlockwiseResponse(this Message message) {
+            var block2 = message.GetBlockOption(OptionNumber.Block2);
+            return message is Response && block2 != null;
+        }
+
+
+        public static Message GetBlock(this Message message, BlockInfo blockInfo) {
+            return message.GetBlock(blockInfo.Num, blockInfo.Szx);
         }
 
         public static Message GetBlock(this Message message, int num, int szx) {
@@ -40,14 +61,6 @@ namespace Catarinum.Coap {
             }
 
             return null;
-        }
-
-        public static Message AppendPayload(this Message message, byte[] bytes) {
-            var newPayload = new byte[message.Payload.Length + bytes.Length];
-            Buffer.BlockCopy(message.Payload, 0, newPayload, 0, message.Payload.Length);
-            Buffer.BlockCopy(bytes, 0, newPayload, message.Payload.Length, bytes.Length);
-            message.Payload = newPayload;
-            return message;
         }
     }
 }

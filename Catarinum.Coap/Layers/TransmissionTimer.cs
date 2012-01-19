@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 
-namespace Catarinum.Coap {
-    public class RetransmissionTimer : ITimer {
+namespace Catarinum.Coap.Layers {
+    public class TransmissionTimer : ITransmissionTimer {
         private Timer _timer;
         private Action<ITransmissionContext> _callback;
 

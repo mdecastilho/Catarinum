@@ -1,14 +1,13 @@
 ﻿using System;
-using Catarinum.Coap.Layers;
 
-namespace Catarinum.Coap {
+namespace Catarinum.Coap.Layers {
     public class TransmissionContext : ITransmissionContext {
-        private readonly ITimer _timer;
+        private readonly ITransmissionTimer _timer;
         public Message Message { get; set; }
         public int Timeout { get; set; }
         public int Retries { get; set; }
 
-        public TransmissionContext(ITimer timer) {
+        public TransmissionContext(ITransmissionTimer timer) {
             _timer = timer;
         }
 

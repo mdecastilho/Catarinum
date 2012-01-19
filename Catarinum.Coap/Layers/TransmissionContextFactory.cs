@@ -1,9 +1,7 @@
-﻿using Catarinum.Coap.Layers;
-
-namespace Catarinum.Coap {
+﻿namespace Catarinum.Coap.Layers {
     public class TransmissionContextFactory : ITransmissionContextFactory {
         public ITransmissionContext Create(MessageLayer messageLayer, Message message) {
-            return new TransmissionContext(new RetransmissionTimer()) { Message = message };
+            return new TransmissionContext(new TransmissionTimer()) { Message = message };
         }
     }
 }

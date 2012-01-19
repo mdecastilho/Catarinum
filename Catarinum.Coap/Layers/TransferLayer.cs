@@ -22,112 +22,116 @@ namespace Catarinum.Coap.Layers {
         }
 
         public override void Send(Message message) {
-            var num = 0;
-            var szx = _szx;
+            var blockInfo = NegotiateBlockSize(message);
+            var isBlockwise = message.Payload.Length > BlockOption.DecodeSzx(blockInfo.Szx);
 
-            // block size negotiation
-            if (message is Response) {
-                var buddyBlock = (BlockOption) ((Response) message).Request.GetFirstOption(OptionNumber.Block2);
-
-                if (buddyBlock != null) {
-                    if (buddyBlock.Szx < _szx) {
-                        szx = buddyBlock.Szx;
-                    }
-
-                    num = buddyBlock.Num;
+            if (isBlockwise) {
+                if (!message.HasToken) {
+                    message.Token = _tokenManager.AcquireToken();
                 }
+
+                var block = message.GetBlock(blockInfo);
+                var optionNumber = message is Request ? OptionNumber.Block1 : OptionNumber.Block2;
+
+                if (block.GetBlockOption(optionNumber).M > 0) {
+                    _incomplete.Add(message.GetTransactionKey(), message);
+                }
+
+                SendMessageOverLowerLayer(block);
             }
-
-            if (message.Payload.Length > BlockOption.DecodeSzx(szx)) {
-                var block = message.GetBlock(num, szx);
-
-                if (block != null) {
-                    block.Token = _tokenManager.AcquireToken();
-                    SendMessageOverLowerLayer(block);
-
-                    if (((BlockOption) block.GetFirstOption(OptionNumber.Block2)).M > 0) {
-                        _incomplete.Add(message.GetTransactionKey(), message);
-                    }
-                }
-                else {
-                    return;
-                    // handleOutOfScopeError(msg);
-                }
+            else {
+                SendMessageOverLowerLayer(message);
             }
-
-            SendMessageOverLowerLayer(message);
         }
 
         public override void OnReceive(Message message) {
-            var block1 = message.GetFirstOption(OptionNumber.Block1) as BlockOption;
-            var block2 = message.GetFirstOption(OptionNumber.Block2) as BlockOption;
-
-            if (block1 == null && block2 == null) {
+            if (!message.IsBlockwise()) {
                 base.OnReceive(message);
             }
-            else if (message is Request && block2 != null) {
-                // send blockwise response
-
-                if (!_incomplete.ContainsKey(message.GetTransactionKey())) {
-                    base.OnReceive(message);
-                }
-                else {
-                    var first = _incomplete[message.GetTransactionKey()];
-                    var block = first.GetBlock(block2.Num, block2.Szx);
-
-                    if (block != null) {
-                        block.Id = message.Id;
-                        var m = ((BlockOption) block.GetFirstOption(OptionNumber.Block2)).M;
-                        SendMessageOverLowerLayer(block);
-
-                        if (m == 0) {
-                            _incomplete.Remove(message.GetTransactionKey());
-                        }
-                    }
-                }
+            else if (message.IsBlockwiseRequest()) {
+                SendBlockwiseResponse(message);
             }
-            else if (message is Response && block1 != null) {
-                // handle blockwise acknowledgement
+            else if (message.IsBlockwiseAcknowledgement()) {
+                HandleBlockwiseAcknowledgement(message);
             }
-            else if (message is Response && block2 != null) {
-                // handle incoming payload using block2
-                HandleIncomingPayload(message, block2);
+            else if (message.IsBlockwiseResponse()) {
+                HandleIncomingPayload(message);
             }
         }
 
-        private void HandleIncomingPayload(Message message, BlockOption blockOption) {
+        private BlockInfo NegotiateBlockSize(Message message) {
+            var blockInfo = new BlockInfo { Szx = _szx };
+            var response = message as Response;
+
+            if (response != null) {
+                var block2 = response.Request.GetBlockOption(OptionNumber.Block2);
+
+                if (block2 != null) {
+                    blockInfo.Num = block2.Num;
+
+                    if (block2.Szx < _szx) {
+                        blockInfo.Szx = block2.Szx;
+                    }
+                }
+            }
+
+            return blockInfo;
+        }
+
+        private void SendBlockwiseResponse(Message message) {
             var key = message.GetTransactionKey();
+            var block2 = message.GetBlockOption(OptionNumber.Block2);
+
+            if (!_incomplete.ContainsKey(key)) {
+                base.OnReceive(message);
+            }
+            else {
+                var first = _incomplete[key];
+                var block = first.GetBlock(block2.Num, block2.Szx);
+
+                if (block != null) {
+                    block.Id = message.Id;
+                    var m = block.GetBlockOption(OptionNumber.Block2).M;
+                    SendMessageOverLowerLayer(block);
+
+                    if (m == 0) {
+                        _incomplete.Remove(key);
+                    }
+                }
+            }
+        }
+
+        private void HandleBlockwiseAcknowledgement(Message message) {
+            var key = message.GetTransactionKey();
+            var first = _incomplete[key];
+            var block1 = message.GetBlockOption(OptionNumber.Block1);
+
+            if (block1.M > 0) {
+                var block = first.GetBlock(block1.Num + 1, block1.Szx);
+                SendMessageOverLowerLayer(block);
+            }
+            else {
+                _incomplete.Remove(key);
+            }
+        }
+
+        private void HandleIncomingPayload(Message message) {
+            var key = message.GetTransactionKey();
+            var block2 = message.GetBlockOption(OptionNumber.Block2);
 
             if (_incomplete.ContainsKey(key)) {
                 _incomplete[key].Id = message.Id;
                 _incomplete[key].AppendPayload(message.Payload);
-                _incomplete[key].SetOption(blockOption);
-            }
-            else if (blockOption.Num == 0) {
-                _incomplete.Add(key, message);
+                _incomplete[key].SetOption(block2);
             }
             else {
-                //Log.error(this, "Transfer started out of order: %s", msg.key());
-                //handleIncompleteError(msg.newReply(true));
-                return;
+                _incomplete.Add(key, message);
             }
 
-            if (blockOption.M > 0) {
-                Message reply = null;
-
-                if (message is Response) {
-                    var uri = ((Response) message).Request.Uri;
-                    reply = new Request(CodeRegistry.Get, message.IsConfirmable) { Uri = uri, Token = message.Token };
-                    reply.AddOption(new BlockOption(OptionNumber.Block2, blockOption.Num + 1, 0, blockOption.Szx));
-                }
-                else if (message is Request) {
-                    // ...
-                }
-                else {
-                    //Log.error(this, "Unsupported message type: %s", msg.key());
-                    return;
-                }
-
+            if (block2.M > 0) {
+                var request = ((Response) message).Request;
+                var reply = new Request(CodeRegistry.Get, message.IsConfirmable) { Uri = request.Uri, Token = message.Token };
+                reply.AddOption(new BlockOption(OptionNumber.Block2, block2.Num + 1, 0, block2.Szx));
                 SendMessageOverLowerLayer(reply);
             }
             else {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Catarinum.Coap.Util;
 
-namespace Catarinum.Coap {
+namespace Catarinum.Coap.Layers {
     public class MessageSerializer {
         public virtual byte[] Serialize(Message message) {
             var writer = new DatagramWriter();

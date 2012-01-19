@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Catarinum.Coap {
+namespace Catarinum.Coap.Layers {
     public interface ITransmissionContext {
         Message Message { get; set; }
         int Timeout { get; set; }

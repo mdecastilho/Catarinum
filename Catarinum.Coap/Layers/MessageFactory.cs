@@ -1,4 +1,4 @@
-﻿namespace Catarinum.Coap {
+﻿namespace Catarinum.Coap.Layers {
     public class MessageFactory {
         public Message Create(MessageType type, CodeRegistry code, int id) {
             Message message;

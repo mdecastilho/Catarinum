@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Catarinum.Coap;
+using Catarinum.Coap.Layers;
 
 namespace Catarinum.Tests.Coap {
-    public class TimerStub : ITimer {
+    public class TimerStub : ITransmissionTimer {
         public List<int> Timeouts { get; set; }
         public int Ticks { get; set; }
         public int Count { get; set; }
