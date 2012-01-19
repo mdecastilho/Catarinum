@@ -2,9 +2,9 @@
 
 namespace Catarinum.Coap.Layers {
     public class MessageLayer : UpperLayer {
-        public const int ResponseTimeout = 2000;
-        public const double ResponseRandomFactor = 1.5;
-        public const int MaxRetransmissions = 4;
+        public static int ResponseTimeout = 2000;
+        public static double ResponseRandomFactor = 1.5;
+        public static int MaxRetransmissions = 4;
         private readonly ITransmissionContextFactory _transmissionContextFactory;
         private readonly Dictionary<int, ITransmissionContext> _retransmissions;
         private readonly IdSequence _idSequence;

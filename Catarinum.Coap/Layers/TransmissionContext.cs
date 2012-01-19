@@ -31,8 +31,8 @@ namespace Catarinum.Coap.Layers {
         }
 
         private static int GetInitialTimeout() {
-            const int min = MessageLayer.ResponseTimeout;
-            const int max = (int) (MessageLayer.ResponseTimeout * MessageLayer.ResponseRandomFactor);
+            var min = MessageLayer.ResponseTimeout;
+            var max = (int) (MessageLayer.ResponseTimeout * MessageLayer.ResponseRandomFactor);
             var random = new Random();
             return random.Next(min, max);
         }

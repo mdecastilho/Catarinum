@@ -23,7 +23,7 @@ namespace Catarinum.Coap {
             request.AddOptions(OptionNumber.UriQuery, ExtractUriQueryOptions(uri));
         }
 
-        private static IEnumerable<Option> ExtractUriPathOptions(Uri uri) {
+        public static IEnumerable<Option> ExtractUriPathOptions(Uri uri) {
             if (uri.AbsolutePath.Equals("/")) {
                 return new List<Option>();
             }
@@ -32,7 +32,7 @@ namespace Catarinum.Coap {
             return paths.Select(p => new Option(OptionNumber.UriPath, ByteConverter.GetBytes(p)));
         }
 
-        private static IEnumerable<Option> ExtractUriQueryOptions(Uri uri) {
+        public static IEnumerable<Option> ExtractUriQueryOptions(Uri uri) {
             if (uri.Query.Equals(string.Empty)) {
                 return new List<Option>();
             }
