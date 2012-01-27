@@ -51,8 +51,17 @@ namespace Catarinum.Coap.Layers {
             foreach (var option in options) {
                 var delta = (int) option.Number - lastOptionNumber;
                 var lenght = option.Value.Length;
-                writer.Write(delta, Message.OptionDeltaBits);
-                writer.Write(lenght, Message.OptionLengthBits);
+
+                if (lenght < 15) {
+                    writer.Write(delta, Message.OptionDeltaBits);
+                    writer.Write(lenght, Message.OptionLengthBits);
+                }
+                else {
+                    writer.Write(delta, Message.OptionDeltaBits);
+                    writer.Write(15, 4);
+                    writer.Write(lenght, Message.OptionLengthBits * 2);
+                }
+
                 writer.WriteBytes(option.Value);
                 lastOptionNumber = (int) option.Number;
             }

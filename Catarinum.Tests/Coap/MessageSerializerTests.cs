@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.Serialization;
 using Catarinum.Coap;
 using Catarinum.Coap.Layers;
@@ -44,6 +45,15 @@ namespace Catarinum.Tests.Coap {
             var bits = Util.GetBits(bytes, 16, 5);
             Assert.AreEqual(21, bytes.Length);
             Assert.AreEqual("0010010000100000000000000000000000000000", bits);
+        }
+
+        [Test]
+        public void Should_serialize_long_option() {
+            var request = new Request(CodeRegistry.Get, true) { Uri = new Uri("coap://server/_seventeen_chars_") };
+            var bytes = _serializer.Serialize(request);
+            var bits = Util.GetBits(bytes, 4, 2);
+            Assert.AreEqual(23, bytes.Length);
+            Assert.AreEqual("1001111100010001", bits);
         }
 
         [Test]
