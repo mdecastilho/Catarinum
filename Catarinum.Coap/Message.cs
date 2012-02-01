@@ -12,6 +12,8 @@ namespace Catarinum.Coap {
         public const int IdBits = 16;
         public const int OptionDeltaBits = 4;
         public const int OptionLengthBits = 4;
+        public const int OptionLengthExtendedBits = 8;
+        public const int MaxOptionLengthBase = (1 << OptionLengthBits) - 2;
         private readonly Dictionary<OptionNumber, List<Option>> _options;
         public int Id { get; set; }
         public MessageType Type { get; private set; }

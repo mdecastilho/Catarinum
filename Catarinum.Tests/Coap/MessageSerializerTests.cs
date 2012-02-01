@@ -53,7 +53,7 @@ namespace Catarinum.Tests.Coap {
             var bytes = _serializer.Serialize(request);
             var bits = Util.GetBits(bytes, 4, 2);
             Assert.AreEqual(23, bytes.Length);
-            Assert.AreEqual("1001111100010001", bits);
+            Assert.AreEqual("1001111100000010", bits);
         }
 
         [Test]
