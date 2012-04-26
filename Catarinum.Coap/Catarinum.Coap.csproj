@@ -52,6 +52,7 @@
     <Compile Include="Layers\MessageHelper.cs" />
     <Compile Include="Layers\TransmissionTimer.cs" />
     <Compile Include="Layers\ITransmissionTimer.cs" />
+    <Compile Include="Layers\TransportLayerException.cs" />
     <Compile Include="TokenManager.cs" />
     <Compile Include="Layers\TransactionLayer.cs" />
     <Compile Include="Layers\TransmissionContextFactory.cs" />

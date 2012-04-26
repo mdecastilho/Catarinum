@@ -35,7 +35,7 @@ namespace Catarinum.Coap.Layers {
                 }
             }
             catch (Exception e) {
-                Console.WriteLine(string.Format("send message error: {0}", e.Message));
+                OnError(new TransportLayerException(string.Format("send message error: {0}", e.Message)));
             }
         }
 
@@ -44,7 +44,7 @@ namespace Catarinum.Coap.Layers {
                 _socket.BeginReceiveFrom(_buffer, 0, _buffer.Length, SocketFlags.None, ref sender, ReceiveCallback, null);
             }
             catch (Exception e) {
-                Console.WriteLine(string.Format("receive message error: {0}", e.Message));
+                OnError(new TransportLayerException(string.Format("receive message error: {0}", e.Message)));
             }
         }
 
@@ -53,7 +53,7 @@ namespace Catarinum.Coap.Layers {
                 _socket.EndSend(ar);
             }
             catch (Exception e) {
-                Console.WriteLine(string.Format("send message error: {0}", e.Message));
+                OnError(new TransportLayerException(string.Format("send message error: {0}", e.Message)));
             }
         }
 
@@ -76,7 +76,7 @@ namespace Catarinum.Coap.Layers {
                 }
             }
             catch (Exception e) {
-                Console.WriteLine(string.Format("receive message error: {0}", e));
+                OnError(new TransportLayerException(string.Format("receive message error: {0}", e.Message)));
             }
         }
     }

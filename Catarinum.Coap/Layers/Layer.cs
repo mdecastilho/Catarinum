@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Catarinum.Coap.Layers {
@@ -23,6 +24,12 @@ namespace Catarinum.Coap.Layers {
         public virtual void OnReceive(Message message) {
             foreach (var observer in _observers) {
                 observer.OnReceive(message);
+            }
+        }
+
+        public void OnError(Exception e) {
+            foreach (var observer in _observers) {
+                observer.OnError(e);
             }
         }
     }

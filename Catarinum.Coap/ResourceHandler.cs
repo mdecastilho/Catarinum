@@ -1,4 +1,6 @@
-﻿namespace Catarinum.Coap {
+﻿using System;
+
+namespace Catarinum.Coap {
     public class ResourceHandler : IMessageObserver {
         private readonly ILayer _messageLayer;
         private readonly IResource _resource;
@@ -26,6 +28,8 @@
                 }
             }
         }
+
+        public void OnError(Exception e) { }
 
         private bool CanBePiggyBacked(Request request) {
             return _resource.CanGet(request.Uri);

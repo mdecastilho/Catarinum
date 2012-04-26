@@ -19,5 +19,9 @@ namespace Catarinum.Examples.Client {
                 Console.WriteLine(string.Format("response received ({0}): {1}", message.Id, ByteConverter.GetString(message.Payload)));
             }
         }
+
+        public void OnError(Exception e) {
+            Console.WriteLine(string.Format("[ERROR] {0}", e.Message));
+        }
     }
 }

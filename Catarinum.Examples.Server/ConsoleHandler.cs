@@ -19,5 +19,9 @@ namespace Catarinum.Examples.Server {
                 Console.WriteLine(string.Format("request received ({0}): {1}", request.Id, request.Uri.LocalPath));
             }
         }
+
+        public void OnError(Exception e) {
+            Console.WriteLine(string.Format("error: {0}", e.Message));
+        }
     }
 }
